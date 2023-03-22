@@ -14,5 +14,5 @@
 */
 
 $router->get('/', function () {
-    return view('home');
+    return view('authorization');
 });
