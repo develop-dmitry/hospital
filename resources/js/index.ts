@@ -1,20 +1,15 @@
-import {createApp} from "vue";
-import {createPinia} from "pinia";
-
 import Authorization from "./Components/Authorization/Authorization.vue";
+import UploadAnalyzes from "./Components/Analyzes/UploadAnalyzes/UploadAnalyzes.vue";
+import AnalyzesList from "./Components/Analyzes/AnalyzesList/AnalyzesList.vue";
 
 import "../scss/style.scss";
 
-import {library} from "@fortawesome/fontawesome-svg-core";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
-
-library.add(faEye, faEyeSlash);
+import ComponentFactory from "./Tools/ComponentFactory";
 
 document.addEventListener('DOMContentLoaded', () => {
-    const app = createApp(Authorization);
+    const componentFactory = new ComponentFactory();
 
-    app.use(createPinia());
-    app.component('font-awesome-icon', FontAwesomeIcon);
-    app.mount('#authorization');
+    componentFactory.makeComponent('#authorization', Authorization);
+    componentFactory.makeComponent('#upload-analyzes', UploadAnalyzes);
+    componentFactory.makeComponent('#analyzes-list', AnalyzesList);
 })

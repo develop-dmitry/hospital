@@ -12,6 +12,22 @@
     <script src="/dist/js/index.js"></script>
 </head>
 <body>
-{{ $slot }}
+
+<div class="wrapper">
+    <header class="header">
+        <div class="container">
+            <div class="header__row">
+                <div class="header__logo">
+                    {{ env('APP_NAME') }}
+                </div>
+                <x-menu
+                    :tagClasses="['header__nav']"
+                ></x-menu>
+            </div>
+        </div>
+    </header>
+
+    {{ $slot }}
+</div>
 </body>
 </html>

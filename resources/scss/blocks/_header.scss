@@ -1,0 +1,17 @@
+.header {
+    border-bottom: 1px solid $brand;
+    padding: $margin-sm 0;
+
+    &__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__logo {
+        font-size: $text-lg;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+}

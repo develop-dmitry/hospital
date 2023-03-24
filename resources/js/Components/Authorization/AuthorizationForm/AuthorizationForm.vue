@@ -1,6 +1,5 @@
 <template lang="pug">
 form.authorization-form(:class="componentClass" @submit.prevent="submit")
-    span.heading.heading_small Авторизация
     Error(:errors="formErrors" :component-class="['authorization-form__error']")
     .authorization-form__row
         Input(placeholder="E-mail" :value="form.email" :error="errors.email" @change="setEmail")
@@ -15,7 +14,7 @@ import {defineComponent} from "vue";
 import ComponentClassMixin from "../../Mixins/ComponentClassMixin.vue";
 import Input from "../../Form/Input/Input.vue";
 import Button from "../../Form/Button/Button.vue";
-import PasswordInput from "../../Form/PasswordInput/PasswordInput.vue";
+import PasswordInput from "../../Form/Input/PasswordInput/PasswordInput.vue";
 import Error from "../../Form/Error/Error.vue";
 
 export default defineComponent({

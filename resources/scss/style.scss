@@ -1,5 +1,11 @@
 @import "vars";
 @import "./blocks/heading";
+@import "./blocks/header";
+@import "./blocks/nav";
+
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;

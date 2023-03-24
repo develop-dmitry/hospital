@@ -1,0 +1,26 @@
+.nav {
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    &__item {
+
+        &:not(:last-child) {
+            margin-right: $margin-sm;
+        }
+    }
+
+    &__link {
+        text-decoration: none;
+        font-size: $text-sm;
+        color: $text;
+
+        &:hover {
+            color: $brand;
+        }
+    }
+}

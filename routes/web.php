@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,20 @@
 |
 */
 
+use Laravel\Lumen\Routing\Router;
+
 $router->get('/', function () {
     return view('authorization');
+});
+
+$router->group(['prefix' => 'profile'], function () use ($router) {
+    $router->group(['prefix' => 'analyzes'], function () use ($router) {
+        $router->get('/', ['as' => 'profile-analyzes', function () {
+            return view('profile.analyzes.list');
+        }]);
+
+        $router->get('upload', ['as' => 'profile-analyzes-upload', function () {
+            return view('profile.analyzes.upload');
+        }]);
+    });
 });

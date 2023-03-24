@@ -22,8 +22,8 @@ export default defineComponent({
 
     data() {
         return {
-            componentValue: '',
-            quietUpdate: false
+            componentValue: '' as string|number,
+            quietUpdate: false as boolean
         }
     },
 
@@ -76,6 +76,7 @@ export default defineComponent({
         font-size: 14px;
         display: block;
         padding-bottom: 5px;
+        cursor: pointer;
     }
 
     &__item {
@@ -88,6 +89,7 @@ export default defineComponent({
         box-shadow: none;
         border: 1px solid $brand;
         color: $text;
+        background: $background;
 
         &:focus {
             outline: none;

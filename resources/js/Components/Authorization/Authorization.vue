@@ -2,6 +2,7 @@
 .authorization
     .container
         .authorization__wrapper
+            h1.heading.heading_small Авторизация
             AuthorizationForm(:component-class="['authorization__form']")
 </template>
 
@@ -24,15 +25,12 @@ export default defineComponent({
 .authorization {
 
     &__wrapper {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
         padding: $margin-xl 0;
     }
 
     &__form {
         width: 400px;
-        margin: 0 auto;
+        margin: 20px auto 0;
     }
 }
 </style>

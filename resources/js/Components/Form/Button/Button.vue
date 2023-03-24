@@ -36,17 +36,15 @@ export default defineComponent({
 @import "../../../../scss/vars";
 
 .button {
-  width: 100%;
-  height: 50px;
-  background: $brand;
-  color: $brandText;
-  border: none;
-  border-radius: $border-sm;
-  font-size: $text-sm;
-  font-weight: 700;
-
-  &:hover {
+    width: 100%;
+    height: 50px;
+    background: $brand;
+    color: $brandText;
+    border: none;
+    border-radius: $border-sm;
+    font-size: $text-sm;
+    font-weight: 700;
     cursor: pointer;
-  }
+    padding: 0 $margin-sm;
 }
 </style>
