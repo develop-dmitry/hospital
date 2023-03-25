@@ -1,11 +1,11 @@
 <template lang="pug">
 .analyzes-list
     .container
-        h1.heading.heading_small Список анализов
+        h1.heading Список анализов
         .analyzes-list__wrapper
             .bulk(:class="{'bulk_disabled': selected.length === 0}")
                 Button(:component-class="['bulk__button']" text="Удалить")
-            .analyzes-list__table
+            .table
                 AnalyzesRow(is-heading)
                 AnalyzesRow(
                     v-for="item in items"
@@ -99,12 +99,6 @@ export default defineComponent({
         > *:not(:first-child) {
             margin-top: $margin-sm;
         }
-    }
-
-    &__table {
-        border: 1px solid $brand;
-        border-radius: $border-sm;
-        overflow: hidden;
     }
 
     .bulk {

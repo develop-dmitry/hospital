@@ -2,7 +2,7 @@
 .upload-analyzes
     .container
         .upload-analyzes__wrapper
-            h1.heading.heading_small Загрузить анализы
+            h1.heading Загрузить анализы
             UploadAnalyzesForm
 </template>
 

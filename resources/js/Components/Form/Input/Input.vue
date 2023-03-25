@@ -7,7 +7,7 @@ label.input(:class="componentClass")
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import ComponentClassMixin from "../../Mixins/ComponentClassMixin.vue";
+import ComponentClassMixin from "../../Mixins/ComponentClassMixin";
 
 export default defineComponent({
     name: 'Input',

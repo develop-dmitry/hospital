@@ -1,5 +1,4 @@
-<script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {PropType, defineComponent} from "vue";
 
 export default defineComponent({
   props: {
@@ -9,4 +8,3 @@ export default defineComponent({
     }
   }
 })
-</script>

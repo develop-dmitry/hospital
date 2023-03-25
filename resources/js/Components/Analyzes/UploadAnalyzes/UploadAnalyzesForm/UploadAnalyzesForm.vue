@@ -1,5 +1,6 @@
 <template lang="pug">
 form.upload-analyzes-form
+    Error(:errors="errors")
     .upload-analyzes-form__row
         Select(placeholder="Выбрать пользователя")
     .upload-analyzes-form__row
@@ -16,28 +17,37 @@ import FileInput from "../../../Form/Input/FileInput/FileInput.vue";
 import Select from "../../../Form/Input/Select/Select.vue";
 import Button from "../../../Form/Button/Button.vue";
 import Input from "../../../Form/Input/Input.vue";
+import Error from "../../../Form/Error/Error.vue";
+import FormMixin from "../../../Mixins/FormMixin";
 import FileExtension from "../../../Form/Input/FileInput/FileExtension";
 
 export default defineComponent({
     name: 'UploadAnalyzesForm',
 
+    mixins: [
+        FormMixin
+    ],
+
     components: {
         FileInput,
         Select,
         Button,
-        Input
+        Input,
+        Error
     },
 
     data() {
         return {
-            allowedExtensions: []
+            allowedExtensions: [FileExtension.PDF],
         }
     },
 
     methods: {
         submit() {
+            this.clearErrors();
 
-        }
+            this.addError('Прозиошла ошибка');
+        },
     }
 })
 </script>

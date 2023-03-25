@@ -1,17 +1,18 @@
 <template lang="pug">
 form.authorization-form(:class="componentClass" @submit.prevent="submit")
-    Error(:errors="formErrors" :component-class="['authorization-form__error']")
+    Error(:errors="errors" :component-class="['authorization-form__error']")
     .authorization-form__row
-        Input(placeholder="E-mail" :value="form.email" :error="errors.email" @change="setEmail")
+        Input(placeholder="E-mail" :value="form.email" :error="fieldErrors.email" @change="setEmail")
     .authorization-form__row
-        PasswordInput(placeholder="Пароль" :value="form.password" :error="errors.password" @change="setPassword")
+        PasswordInput(placeholder="Пароль" :value="form.password" :error="fieldErrors.password" @change="setPassword")
     .authorization-form__row
         Button(text="Войти" @click="submit")
 </template>
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import ComponentClassMixin from "../../Mixins/ComponentClassMixin.vue";
+import ComponentClassMixin from "../../Mixins/ComponentClassMixin";
+import FormMixin from "../../Mixins/FormMixin";
 import Input from "../../Form/Input/Input.vue";
 import Button from "../../Form/Button/Button.vue";
 import PasswordInput from "../../Form/Input/PasswordInput/PasswordInput.vue";
@@ -21,7 +22,8 @@ export default defineComponent({
    name: 'AuthorizationForm',
 
     mixins: [
-        ComponentClassMixin
+        ComponentClassMixin,
+        FormMixin
     ],
 
     components: {
@@ -45,11 +47,10 @@ export default defineComponent({
                email: 'Введен некорректный e-mail',
                password: 'Пароль должен содержать больше 8 символов'
            } as {[index: string]: string},
-           errors: {
+           fieldErrors: {
                email: '',
                password: ''
            } as {[index: string]: string},
-           formErrors: [] as string[]
        }
     },
 
@@ -61,7 +62,7 @@ export default defineComponent({
                 return;
             }
 
-            this.formErrors.push('Неверный логин или пароль');
+            this.addError('Неверный логин или пароль');
         },
 
         validate(): boolean {
@@ -74,7 +75,7 @@ export default defineComponent({
                     const valid = rule.test(this.form[key]);
 
                     if (!valid) {
-                        this.errors[key] = this.errorsList[key];
+                        this.fieldErrors[key] = this.errorsList[key];
 
                         isValid = false;
                     }
@@ -84,19 +85,19 @@ export default defineComponent({
             return isValid;
         },
 
-        clearErrors(): void {
-            Object.keys(this.errors).forEach((key) => {
-                this.errors[key] = '';
+        clearErrors() {
+            Object.keys(this.fieldErrors).forEach((key) => {
+                this.fieldErrors[key] = '';
             })
 
-            this.formErrors = [];
+            this.errors = [];
         },
 
-       setEmail(email: string): void {
+       setEmail(email: string) {
            this.form.email = email;
        },
 
-        setPassword(password: string): void {
+        setPassword(password: string) {
            this.form.password = password;
         }
     }

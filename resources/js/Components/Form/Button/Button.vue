@@ -4,7 +4,7 @@ button.button(:class="componentClass" @click.prevent="clickHandler") {{ text }}
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import ComponentClassMixin from "../../Mixins/ComponentClassMixin.vue";
+import ComponentClassMixin from "../../Mixins/ComponentClassMixin";
 
 export default defineComponent({
   name: 'Button',

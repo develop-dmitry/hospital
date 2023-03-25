@@ -20,13 +20,23 @@ $router->get('/', function () {
 });
 
 $router->group(['prefix' => 'profile'], function () use ($router) {
-    $router->group(['prefix' => 'analyzes'], function () use ($router) {
-        $router->get('/', ['as' => 'profile-analyzes', function () {
-            return view('profile.analyzes.list');
+    $router->group(['prefix' => 'analyze'], function () use ($router) {
+        $router->get('/', ['as' => 'profile-analyze', function () {
+            return view('profile.analyze.list');
         }]);
 
-        $router->get('upload', ['as' => 'profile-analyzes-upload', function () {
-            return view('profile.analyzes.upload');
+        $router->get('upload', ['as' => 'profile-analyze-upload', function () {
+            return view('profile.analyze.upload');
+        }]);
+    });
+
+    $router->group(['prefix' => 'schedule'], function () use ($router) {
+        $router->get('/', ['as' => 'profile-schedule', function () {
+            return view('profile.schedule.list');
+        }]);
+
+        $router->get('choose', ['as' => 'profile-schedule-choose', function () {
+            return view('profile.schedule.choose');
         }]);
     });
 });

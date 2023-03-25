@@ -2,7 +2,7 @@ import {Component, createApp} from "vue";
 import {createPinia, Pinia} from "pinia";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {faEye, faEyeSlash, faChevronDown} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faEyeSlash, faChevronDown, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import {faFile, faFilePdf} from "@fortawesome/free-regular-svg-icons";
 
 export default class ComponentFactory {
@@ -11,7 +11,7 @@ export default class ComponentFactory {
 
     constructor() {
         this.pinia = createPinia();
-        library.add(faEye, faEyeSlash, faFile, faFilePdf, faChevronDown);
+        library.add(faEye, faEyeSlash, faFile, faFilePdf, faChevronDown, faChevronLeft, faChevronRight);
     }
 
     public makeComponent(selector: string, component: Component) {

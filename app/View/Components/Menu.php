@@ -15,8 +15,10 @@ class Menu extends Component
     public function __construct(array $tagClasses)
     {
         $this->items = [
-            route('profile-analyzes') => 'Анализы',
-            route('profile-analyzes-upload') => 'Загрузить анализы'
+            route('profile-schedule') => 'График работы',
+            route('profile-schedule-choose') => 'Выбрать график работы',
+            route('profile-analyze') => 'Анализы',
+            route('profile-analyze-upload') => 'Загрузить анализы'
         ];
 
         $this->tagClasses = array_merge($tagClasses, $this->tagClasses);
