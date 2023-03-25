@@ -17,3 +17,7 @@ docker exec hospital_web npm install
 ```
 docker exec hospital_web npm run build
 ```
+## 5. Выполнение миграций
+```
+docker exec hospital_web php artisan migrate
+```
