@@ -46,12 +46,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function analyses()
     {
-        return $this->hasMany(Analysis::class);
+        return $this->hasMany(Analyzes::class);
     }
 
     public function uploadedAnalyses()
     {
-        return $this->hasMany(Analysis::class, 'uploaded_user');
+        return $this->hasMany(Analyzes::class, 'uploaded_user');
     }
 
     public function schedules()

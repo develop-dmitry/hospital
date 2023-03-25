@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Analysis;
+use App\Models\Analyzes;
 
-class AnalysisSeeder extends Seeder
+class AnalyzesSeeder extends Seeder
 {
     public function run()
     {
-        Analysis::factory()->count(10)->create();
+        Analyzes::factory()->count(10)->create();
     }
 }

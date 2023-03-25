@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Analysis;
+use App\Models\Analyzes;
 use App\Models\User;
 
-class AnalysisFactory extends Factory
+class AnalyzesFactory extends Factory
 {
-    protected $model = Analysis::class;
+    protected $model = Analyzes::class;
     public function definition(): array
     {
         return [
