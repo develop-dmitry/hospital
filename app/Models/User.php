@@ -19,7 +19,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email',
+        'name',
+        'login',
+        'password',
     ];
 
     /**
@@ -30,4 +32,30 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+
+    public function doctors()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    public function analyses()
+    {
+        return $this->hasMany(Analysis::class);
+    }
+
+    public function uploadedAnalyses()
+    {
+        return $this->hasMany(Analysis::class, 'uploaded_user');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(DoctorsSchedule::class);
+    }
 }
