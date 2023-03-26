@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Analyzes extends Model
+class Analysis extends Model
 {
     use HasFactory;
+
+    protected $table = 'analyzes';
 
     protected $fillable = [
         'user_id',
         'name',
         'link',
-        'uploaded_user',
+        'uploaded_doctor',
     ];
 
     public function user()
@@ -21,8 +23,8 @@ class Analyzes extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function uploadedByUser()
+    public function uploadedByDoctor()
     {
-        return $this->belongsTo(User::class, 'uploaded_user');
+        return $this->belongsTo(Doctor::class);
     }
 }

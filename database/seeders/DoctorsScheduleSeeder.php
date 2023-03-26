@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\DoctorsSchedule;
+use App\Models\DoctorSchedule;
 
 class DoctorsScheduleSeeder extends Seeder
 {
     public function run()
     {
-        DoctorsSchedule::factory()->count(10)->create();
+        DoctorSchedule::factory()->count(10)->create();
     }
 }

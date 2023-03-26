@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Doctor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Appointment;
 use App\Models\User;
@@ -16,7 +17,8 @@ class AppointmentFactory extends Factory
         return [
             'department_id' => Department::factory(),
             'user_id' => User::factory(),
-            'visit_date' => $this->faker->dateTimeBetween('now', '+1 year'),
+            'doctor_id' => Doctor::factory(),
+            'visit_date' => $this->faker->dateTimeBetween('now', '+1 month'),
             'visitor_name' => $this->faker->name,
             'visitor_phone' => $this->faker->phoneNumber,
         ];

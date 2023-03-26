@@ -16,11 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->text('link');
-            $table->unsignedBigInteger('uploaded_user');
+            $table->unsignedBigInteger('uploaded_doctor');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('uploaded_user')->references('id')->on('users');
+            $table->foreign('uploaded_doctor')->references('id')->on('doctors');
         });
     }
 

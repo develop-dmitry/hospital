@@ -18,10 +18,12 @@ return new class extends Migration
             $table->timestamp('visit_date');
             $table->string('visitor_name');
             $table->string('visitor_phone');
+            $table->unsignedBigInteger('doctor_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('doctor_id')->references('id')->on('doctors');
         });
     }
 
