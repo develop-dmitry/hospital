@@ -1,0 +1,13 @@
+.heading {
+    font-size: $text-xxl;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    display: block;
+    letter-spacing: 1px;
+    line-height: 1.3;
+
+    &_small {
+        font-size: $text-xl;
+    }
+}

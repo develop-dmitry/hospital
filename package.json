@@ -19,6 +19,11 @@
   },
   "homepage": "https://github.com/develop-dmitry/hospital#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-brands-svg-icons": "^6.3.0",
+    "@fortawesome/free-regular-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
     "axios": "^1.3.4",
     "pinia": "^2.0.33"
   },
