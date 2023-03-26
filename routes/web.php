@@ -13,6 +13,7 @@
 |
 */
 
+use App\Http\Controllers\UserController;
 use Laravel\Lumen\Routing\Router;
 
 $router->get('/', function () {
@@ -38,5 +39,13 @@ $router->group(['prefix' => 'profile'], function () use ($router) {
         $router->get('choose', ['as' => 'profile-schedule-choose', function () {
             return view('profile.schedule.choose');
         }]);
+    });
+});
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->group(['prefix' => 'v1'], function () use ($router) {
+        $router->group(['prefix' => 'user'], function () use ($router) {
+            $router->post('auth', ['uses' => 'UserController@authorization']);
+        });
     });
 });

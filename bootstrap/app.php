@@ -48,6 +48,22 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->bind(\App\Hospital\Domain\User\UserBuilderInterface::class, function () {
+    return new \App\Hospital\Application\User\UserBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\User\UserRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\UserRepository(
+        $app->make(\App\Hospital\Domain\User\UserBuilderInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\User\UserAuthorizationInterface::class, function () use ($app) {
+    return new \App\Hospital\Application\User\UserAuthorization(
+        $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class)
+    );
+});
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -76,9 +92,9 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -92,9 +108,10 @@ $app->configure('app');
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(\Illuminate\Redis\RedisServiceProvider::class);
+$app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
