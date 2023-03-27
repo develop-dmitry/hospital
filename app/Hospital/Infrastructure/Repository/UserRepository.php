@@ -12,11 +12,12 @@ use App\Hospital\Domain\User\UserBuilderInterface;
 use App\Hospital\Domain\User\UserRepositoryInterface;
 use App\Models\User as UserModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        protected UserBuilderInterface $userBuilder
+        protected UserBuilderInterface $userBuilder,
     ) {
     }
 
@@ -31,20 +32,48 @@ class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function saveUser(User $user): void
+    public function findByToken(string $token): User
     {
-        $userModel = new UserModel();
+        try {
+            $user = UserModel::where('auth_token', $token)->firstOrFail();
+
+            return $this->userBuilder->makeFromModel($user);
+        } catch (ModelNotFoundException) {
+            throw new UserNotFoundException("User with token $token not found");
+        }
+    }
+
+    public function saveUser(User $user): int
+    {
+        $userModel = UserModel::find($user->getId());
 
         $userModel->fill([
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             'login' => $user->getLogin(),
-            'password' => $user->getPassword(),
+            'password' => ($userModel->exists) ? $user->getPassword() : Hash::make($user->getPassword()),
             'auth_token' => $user->getAuthToken()
         ]);
 
         if (!$userModel->save()) {
-            throw new UserSaveFailedException('Failed to save user');
+            throw new UserSaveFailedException("Failed to save user with id {$userModel->id}");
+        }
+
+        return $userModel->id;
+    }
+
+    public function changePassword(int $id, string $password): void
+    {
+        try {
+            $userModel = UserModel::findOrFail($id);
+
+            $userModel->password = Hash::make($password);
+
+            if (!$userModel->save()) {
+                throw new UserSaveFailedException("Failed to save user with id {$userModel->id}");
+            }
+        } catch (ModelNotFoundException) {
+            throw new UserNotFoundException("User with id $id not found");
         }
     }
 

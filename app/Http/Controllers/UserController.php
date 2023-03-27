@@ -9,8 +9,13 @@ use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Laravel\Lumen\Application;
+use Laravel\Lumen\Http\Redirector;
 
 class UserController extends Controller
 {
@@ -19,7 +24,16 @@ class UserController extends Controller
     ) {
     }
 
-    public function authorization(Request $request)
+    public function login(): Application|RedirectResponse|View|Redirector
+    {
+        if ($this->userAuthorization->isAuth()) {
+            return redirect(route('profile'));
+        }
+
+        return view('login');
+    }
+
+    public function authorization(Request $request): JsonResponse
     {
         try {
             $this->validate($request, [
@@ -32,7 +46,7 @@ class UserController extends Controller
                 $request->get('password')
             );
 
-            $this->userAuthorization->authorization($authorizationRequest);
+            $this->userAuthorization->auth($authorizationRequest);
         } catch (ValidationException) {
             return response()->json(['success' => false, 'message' => 'Проверьте заполненность полей']);
         } catch (InvalidUserPasswordException) {

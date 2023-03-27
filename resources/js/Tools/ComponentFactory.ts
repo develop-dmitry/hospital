@@ -15,11 +15,13 @@ export default class ComponentFactory {
     }
 
     public makeComponent(selector: string, component: Component) {
-        if (!document.querySelector(selector)) {
+        const element: HTMLElement|null = document.querySelector(selector);
+
+        if (!element) {
             return;
         }
 
-        const instance = createApp(component);
+        const instance = createApp(component, element.dataset);
 
         instance.use(this.pinia);
         instance.component('font-awesome-icon', FontAwesomeIcon);

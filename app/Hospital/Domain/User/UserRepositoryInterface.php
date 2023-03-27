@@ -18,11 +18,18 @@ interface UserRepositoryInterface
     public function findByEmail(string $email): User;
 
     /**
+     * @param string $token
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public function findByToken(string $token): User;
+
+    /**
      * @param User $user
-     * @return void
+     * @return int
      * @throws UserSaveFailedException
      */
-    public function saveUser(User $user): void;
+    public function saveUser(User $user): int;
 
     /**
      * @param int $id
@@ -30,4 +37,13 @@ interface UserRepositoryInterface
      * @throws UserDropFailedException
      */
     public function dropUser(int $id): void;
+
+    /**
+     * @param int $id
+     * @param string $password
+     * @return void
+     * @throws UserSaveFailedException
+     * @throws UserNotFoundException
+     */
+    public function changePassword(int $id, string $password): void;
 }

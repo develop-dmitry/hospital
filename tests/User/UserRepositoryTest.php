@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\User;
 
 use App\Hospital\Application\User\UserBuilder;
-use App\Hospital\Domain\User\Exception\UserDropFailedException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\User;
 use App\Hospital\Infrastructure\Repository\UserRepository;
@@ -59,10 +58,10 @@ class UserRepositoryTest extends TestCase
 
     public function testDropUser(): void
     {
-        $this->expectException(UserDropFailedException::class);
+        $id = $this->userRepository->saveUser($this->user);
+        $this->userRepository->dropUser($id);
 
-        $this->userRepository->saveUser($this->user);
-
-        $this->userRepository->dropUser($this->user->getId());
+        $this->expectException(UserNotFoundException::class);
+        $this->userRepository->findByEmail($this->user->getEmail());
     }
 }

@@ -6,6 +6,7 @@ namespace App\Hospital\Domain\User;
 
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
+use App\Hospital\Domain\User\Exception\UserNotAuthException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
 
@@ -18,5 +19,16 @@ interface UserAuthorizationInterface
      * @throws UserNotFoundException
      * @throws UserSaveFailedException
      */
-    public function authorization(AuthorizationRequest $request): void;
+    public function auth(AuthorizationRequest $request): void;
+
+    /**
+     * @return bool
+     */
+    public function isAuth(): bool;
+
+    /**
+     * @return User
+     * @throws UserNotAuthException
+     */
+    public function getUser(): User;
 }
