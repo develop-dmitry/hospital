@@ -15,7 +15,9 @@
 
 use Laravel\Lumen\Routing\Router;
 
-$router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
+$router->get('/', ['as' => 'home', function () {
+    return view('home');
+}]);
 
 $router->group(['prefix' => 'profile'], function () use ($router) {
     $router->get('/', ['as' => 'profile', 'middleware' => ['auth'], function () {
@@ -48,5 +50,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('auth', ['uses' => 'UserController@authorization']);
         });
+
+        $router->group(['prefix' => 'schedule'], function () use ($router) {
+            $router->get('busy', ['uses' => 'ChooseDoctorScheduleController@getBusyDates']);
+        });
     });
 });
+
+$router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);

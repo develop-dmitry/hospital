@@ -45,7 +45,7 @@ class UserAuthorization implements UserAuthorizationInterface
 
     public function getUser(): User
     {
-        if ($this->isAuth()) {
+        if (!$this->isAuth()) {
             throw new UserNotAuthException('User not authorized');
         }
 

@@ -79,7 +79,6 @@ export default defineComponent({
 
             this.userStore.auth(request)
                 .then((response) => {
-                    console.log(request);
                     if (response.success) {
                         this.$emit('authorization', true);
                     } else {
