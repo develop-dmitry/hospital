@@ -3,7 +3,7 @@
     .container
         .authorization__wrapper
             h1.heading.heading_small Авторизация
-            AuthorizationForm(:component-class="['authorization__form']")
+            AuthorizationForm(:component-class="['authorization__form']" @authorization="authorizationHandler")
 </template>
 
 <script lang="ts">
@@ -15,6 +15,21 @@ export default defineComponent({
 
     components: {
         AuthorizationForm
+    },
+
+    props: {
+        redirect: {
+            type: String,
+            required: true
+        }
+    },
+
+    methods: {
+        authorizationHandler(success: boolean) {
+            if (success) {
+                document.location.href = this.redirect;
+            }
+        }
     }
 });
 </script>
