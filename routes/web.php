@@ -40,3 +40,8 @@ $router->group(['prefix' => 'profile'], function () use ($router) {
         }]);
     });
 });
+
+$router->group(['prefix' => 'tg'], function () use ($router) {
+    $router->get('/Bot', ['as' => 'telegram.bot', function () {
+    }]);
+});
