@@ -14,6 +14,7 @@ use App\Hospital\Domain\User\UserRepositoryInterface;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Psr\Log\LoggerInterface;
 
 class UserAuthorization implements UserAuthorizationInterface
 {
@@ -25,7 +26,7 @@ class UserAuthorization implements UserAuthorizationInterface
 
     public function __construct(
         protected UserRepositoryInterface $userRepository,
-        protected SessionManager $sessionManager
+        protected SessionManager $sessionManager,
     ) {
         $this->token = $this->sessionManager->get($this->sessionTokenName, '');
 
