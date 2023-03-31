@@ -27,7 +27,6 @@ class UserAuthorization implements UserAuthorizationInterface
     public function __construct(
         protected UserRepositoryInterface $userRepository,
         protected SessionManager $sessionManager,
-        protected LoggerInterface $logger
     ) {
         $this->token = $this->sessionManager->get($this->sessionTokenName, '');
 
@@ -67,8 +66,6 @@ class UserAuthorization implements UserAuthorizationInterface
         $this->userRepository->saveUser($user);
 
         $this->saveToken();
-
-        $this->logger->debug("Пользователь с email {$request->getEmail()} авторизовался");
     }
 
     protected function saveToken(): void
