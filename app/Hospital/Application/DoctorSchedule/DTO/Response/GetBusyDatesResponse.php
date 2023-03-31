@@ -9,9 +9,6 @@ use DateTime;
 
 class GetBusyDatesResponse implements GetBusyDatesResponseInterface
 {
-    /**
-     * @param DateTime[] $dates
-     */
     public function __construct(
         protected array $dates
     ) {

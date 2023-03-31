@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Hospital\Infrastructure\Repository;
 
 use App\Hospital\Domain\DoctorSchedule\DoctorScheduleBuilder;
+use App\Hospital\Domain\DoctorSchedule\Exception\ChooseDateFailedException;
 use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface;
 use App\Hospital\Domain\DoctorSchedule\DoctorSchedule;
 use App\Models\DoctorSchedule as DoctorScheduleModel;
@@ -32,6 +33,22 @@ class DoctorScheduleRepository implements DoctorScheduleRepositoryInterface
         }
 
         return $result;
+    }
+
+    public function chooseDates(int $doctorId, array $dates): void
+    {
+        $data = [];
+
+        foreach ($dates as $date) {
+            $data[] = [
+                'doctor_id' => $doctorId,
+                'date' => $date
+            ];
+        }
+
+        if (!DoctorScheduleModel::insert($data)) {
+            throw new ChooseDateFailedException('Failed to choose the dates of work schedule');
+        }
     }
 
     protected function makeEntity(DoctorScheduleModel $doctorScheduleModel): DoctorSchedule

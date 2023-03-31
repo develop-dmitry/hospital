@@ -8,8 +8,5 @@ use DateTime;
 
 interface GetBusyDatesResponseInterface
 {
-    /**
-     * @return DateTime[]
-     */
     public function getDates(): array;
 }

@@ -43,6 +43,7 @@ class DoctorScheduleBuilder implements DoctorScheduleBuilderInterface
     public function setDate(DateTime $date): static
     {
         $this->date = $date;
+        return $this;
     }
 
     public function reset(): void

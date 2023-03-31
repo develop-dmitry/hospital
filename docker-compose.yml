@@ -24,6 +24,7 @@ services:
     container_name: hospital_web
     volumes:
       - ./:/var/www/html
+      - ./log/php-fpm:/var/log/php-fpm
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
