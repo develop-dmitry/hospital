@@ -17,6 +17,8 @@ import Input from "../../Form/Input/Input.vue";
 import Button from "../../Form/Button/Button.vue";
 import PasswordInput from "../../Form/Input/PasswordInput/PasswordInput.vue";
 import Error from "../../Form/Error/Error.vue";
+import {useUserStore} from "../../../Stores/User/UserStore";
+import AuthRequest from "../../../Stores/User/DTO/AuthRequest";
 
 export default defineComponent({
    name: 'AuthorizationForm',
@@ -32,6 +34,10 @@ export default defineComponent({
         Button,
         Error
     },
+
+    emits: [
+        'authorization'
+    ],
 
     data() {
        return {
@@ -51,18 +57,41 @@ export default defineComponent({
                email: '',
                password: ''
            } as {[index: string]: string},
+           isSubmit: false
        }
     },
 
     methods: {
         submit() {
+            if (this.isSubmit) {
+                return;
+            }
+
             this.clearErrors()
 
             if (!this.validate()) {
                 return;
             }
 
-            this.addError('Неверный логин или пароль');
+            this.isSubmit = true;
+
+            const request = new AuthRequest(this.form.email, this.form.password);
+
+            this.userStore.auth(request)
+                .then((response) => {
+                    console.log(request);
+                    if (response.success) {
+                        this.$emit('authorization', true);
+                    } else {
+                        this.addError(response.message);
+                    }
+                })
+                .catch(() => {
+                    this.addError('При выполнении запроса произошла ошибка, попробуйте позднее');
+                })
+                .finally(() => {
+                    this.isSubmit = false;
+                })
         },
 
         validate(): boolean {
@@ -100,6 +129,12 @@ export default defineComponent({
         setPassword(password: string) {
            this.form.password = password;
         }
+    },
+
+    setup() {
+       const userStore = useUserStore();
+
+       return { userStore };
     }
 });
 </script>
