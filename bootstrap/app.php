@@ -65,7 +65,8 @@ $app->singleton('session.store', function () use ($app) {
 $app->singleton(\App\Hospital\Domain\User\UserAuthorizationInterface::class, function () use ($app) {
     return new \App\Hospital\Application\User\UserAuthorization(
         $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class),
-        $app->get('session')
+        $app->get('session'),
+        $app->make(\Psr\Log\LoggerInterface::class)
     );
 });
 
