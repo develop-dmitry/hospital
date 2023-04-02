@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Hospital\Application\Telegram\Keyboard;
 
 use App\Hospital\Application\Telegram\Client\ClientInterface;
+use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use App\Hospital\Infrastructure\Repository\DoctorRepository;
 use App\Hospital\Infrastructure\Repository\DoctorScheduleRepository;
 use Illuminate\Support\Facades\App;
@@ -33,12 +34,40 @@ class ClientKeyboard
             );
     }
 
-    public function getDoctorsKeyboard(): InlineKeyboardMarkup
+    public function getDepartments(): InlineKeyboardMarkup
+    {
+        $keyboard = InlineKeyboardMarkup::make();
+
+        $departmentsRepository = App::make(DepartmentRepository::class);
+        $departments = $departmentsRepository->getAll();
+
+        $callbackData = ['m' => 'm_ar'];
+        if (!empty($departments)) {
+            array_map(function ($department) use ($keyboard, $callbackData) {
+                $callbackData['m_id'] = $department['id'];
+                $departmentName = $department['name'];
+
+                $keyboard->addRow(InlineKeyboardButton::make(
+                    $departmentName,
+                    callback_data: json_encode($callbackData)
+                ));
+            }, $departments);
+        } else {
+            $keyboard->addRow(InlineKeyboardButton::make(
+                __('bot.doctor.non_active'),
+                callback_data: json_encode($callbackData)
+            ));
+        }
+
+        return $keyboard;
+    }
+
+    public function getDoctorsKeyboard(int $departmentId): InlineKeyboardMarkup
     {
         $keyboard = InlineKeyboardMarkup::make();
 
         $doctorsRepository = App::make(DoctorRepository::class);
-        $doctors = $doctorsRepository->getAll();
+        $doctors = $doctorsRepository->getByDepartmentId($departmentId);
 
         $callbackData = ['m' => 'm_ab'];
 

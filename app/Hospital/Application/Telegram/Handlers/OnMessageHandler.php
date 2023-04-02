@@ -38,8 +38,8 @@ class OnMessageHandler extends BaseHandler
 
     public function appointments()
     {
-        $this->sendMessage(__('bot.doctor.list'), [
-            'reply_markup' => ClientKeyboard::make($this->getClient())->getDoctorsKeyboard()
+        $this->sendMessage(__('bot.departments.list'), [
+            'reply_markup' => ClientKeyboard::make($this->getClient())->getDepartments()
         ]);
     }
 }

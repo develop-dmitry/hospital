@@ -48,4 +48,9 @@ class DoctorRepository
         $doctor = Doctor::find($id);
         return $doctor ? $doctor->user->name : null;
     }
+
+    public function getByDepartmentId(int $departmentId)
+    {
+        return $this->model->where('department_id', $departmentId)->get()->toArray();
+    }
 }

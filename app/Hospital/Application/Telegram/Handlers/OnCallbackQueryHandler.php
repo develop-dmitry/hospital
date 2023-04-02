@@ -21,6 +21,20 @@ class OnCallbackQueryHandler extends BaseHandler
 
             if (isset($callbackData['m'])) {
                 switch ($callbackData['m']) {
+                    case 'm_ar':
+                        if (isset($callbackData['m_id'])) {
+                            $departmentId = $callbackData['m_id'];
+                            $message = __('bot.doctor.list');
+                            $keyboard = ClientKeyboard::make($this->getClient())->getDoctorsKeyboard($departmentId);
+
+                            $this->editMessage($message, [
+                                'reply_markup' => $keyboard,
+                                'disable_web_page_preview' => true
+                            ]);
+                        } else {
+                            $this->sendMessage(__('bot.doctor.non_active'));
+                        }
+                        break;
                     case 'm_ab':
                         if (isset($callbackData['m_id'])) {
                             $doctorId = $callbackData['m_id'];
