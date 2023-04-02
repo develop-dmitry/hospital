@@ -9,7 +9,7 @@ class DoctorScheduleRepository
 {
     public function getById(int $id): ?DoctorSchedule
     {
-        return DoctorSchedule::find($id);
+        return DoctorSchedule::find($id)->toArray();
     }
 
     public function getAll(): \Illuminate\Database\Eloquent\Collection

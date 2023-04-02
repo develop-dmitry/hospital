@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Hospital\Application\Telegram\Keyboard;
 
 use App\Hospital\Application\Telegram\Client\ClientInterface;
+use App\Hospital\Application\Telegram\Tools\Tools;
 use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use App\Hospital\Infrastructure\Repository\DoctorRepository;
 use App\Hospital\Infrastructure\Repository\DoctorScheduleRepository;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\App;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
@@ -104,8 +106,9 @@ class ClientKeyboard
 
         if (!empty($doctorsSchedule)) {
             array_map(function ($schedule) use ($keyboard, $callbackData, $doctorsScheduleRepository) {
-                $callbackData['m_id'] = $schedule['id'];
                 $date = date_format(date_create($schedule['date']), 'd.m.Y');
+                $callbackData['m_id'] = $date;
+                $callbackData['d_id'] = $schedule['doctor_id'];
 
                 $keyboard->addRow(InlineKeyboardButton::make(
                     $date,
@@ -121,4 +124,14 @@ class ClientKeyboard
 
         return $keyboard;
     }
+
+    public function getAppointmentKeyboard(string $scheduleDate, int $doctorId)
+    {
+
+        $keyboard = InlineKeyboardMarkup::make();
+        $dateRange = Tools::getDateRange($scheduleDate);
+
+        $appointmentRepository = App::make(Appointment::class);
+    }
+
 }

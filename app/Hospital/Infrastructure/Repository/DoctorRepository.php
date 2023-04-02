@@ -8,26 +8,19 @@ use App\Models\Doctor;
 
 class DoctorRepository
 {
-    protected $model;
-
-    public function __construct(Doctor $doctor)
-    {
-        $this->model = $doctor;
-    }
-
     public function getById(int $id): Doctor
     {
-        return $this->model->findOrFail($id);
+        return Doctor::findOrFail($id);
     }
 
     public function getAll(): array
     {
-        return $this->model->all()->toArray();
+        return Doctor::all()->toArray();
     }
 
     public function create(array $data): Doctor
     {
-        return $this->model->create($data);
+        return Doctor::create($data);
     }
 
     public function update(int $id, array $data): Doctor
@@ -51,6 +44,6 @@ class DoctorRepository
 
     public function getByDepartmentId(int $departmentId)
     {
-        return $this->model->where('department_id', $departmentId)->get()->toArray();
+        return Doctor::where('department_id', $departmentId)->get()->toArray();
     }
 }

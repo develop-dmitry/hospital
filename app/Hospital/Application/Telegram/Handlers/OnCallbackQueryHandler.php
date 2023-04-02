@@ -35,12 +35,29 @@ class OnCallbackQueryHandler extends BaseHandler
                             $this->sendMessage(__('bot.doctor.non_active'));
                         }
                         break;
+
                     case 'm_ab':
                         if (isset($callbackData['m_id'])) {
                             $doctorId = $callbackData['m_id'];
                             $message = __('bot.schedule.list');
                             $keyboard = ClientKeyboard::make($this->getClient())->getScheduleKeyboard($doctorId);
 
+                            $this->editMessage($message, [
+                                'reply_markup' => $keyboard,
+                                'disable_web_page_preview' => true
+                            ]);
+                        } else {
+                            $this->sendMessage(__('bot.schedule.link'));
+                        }
+                        break;
+
+                    case 'm_rg':
+                        if (isset($callbackData['m_id'])) {
+                            $scheduleId = $callbackData['m_id'];
+
+                            $message = __('bot.schedule.time');
+                            $keyboard = ClientKeyboard::make($this->getClient())->getAppointmentKeyboard($scheduleId);
+//
                             $this->editMessage($message, [
                                 'reply_markup' => $keyboard,
                                 'disable_web_page_preview' => true
