@@ -48,6 +48,40 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton(\Illuminate\Session\SessionManager::class, function () use ($app) {
+    return $app->loadComponent(
+        'session',
+        Illuminate\Session\SessionServiceProvider::class, 'session'
+    );
+});
+
+$app->singleton('session.store', function () use ($app) {
+    return $app->loadComponent(
+        'session',
+        Illuminate\Session\SessionServiceProvider::class, 'session.store'
+    );
+});
+
+$app->singleton(\App\Hospital\Domain\User\UserAuthorizationInterface::class, function () use ($app) {
+    return new \App\Hospital\Application\User\UserAuthorization(
+        $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class),
+        $app->get('session')
+    );
+});
+
+$app->bind(\App\Hospital\Domain\User\UserBuilderInterface::class, function () {
+    return new \App\Hospital\Application\User\UserBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\User\UserRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\UserRepository(
+        $app->make(\App\Hospital\Domain\User\UserBuilderInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Application\Telegram\Client\ClientInterface::class, function () {
+    return new App\Hospital\Application\Telegram\Client\Client();
+});
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -60,6 +94,9 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('session');
+$app->configure('telegram');
+$app->setLocale(config('app.locale'));
 
 /*
 |--------------------------------------------------------------------------
@@ -72,13 +109,14 @@ $app->configure('app');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    \Illuminate\Session\Middleware\StartSession::class
+]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+
+$app->routeMiddleware([
+    'auth' => \App\Http\Middleware\AuthMiddleware::class
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -92,9 +130,11 @@ $app->configure('app');
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(\Illuminate\Redis\RedisServiceProvider::class);
+$app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+$app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
