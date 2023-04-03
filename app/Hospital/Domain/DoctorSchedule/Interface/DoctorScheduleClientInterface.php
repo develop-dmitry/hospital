@@ -9,9 +9,11 @@ use App\Hospital\Domain\DoctorSchedule\Exception\ChooseBusyDateException;
 use App\Hospital\Domain\DoctorSchedule\Exception\ChooseDateFailedException;
 use App\Hospital\Domain\DoctorSchedule\Interface\Request\ChooseDatesRequestInterface;
 use App\Hospital\Domain\DoctorSchedule\Interface\Request\GetBusyDatesRequestInterface;
+use App\Hospital\Domain\DoctorSchedule\Interface\Request\GetDoctorScheduleRequestInterface;
 use App\Hospital\Domain\DoctorSchedule\Interface\Response\GetBusyDatesResponseInterface;
+use App\Hospital\Domain\DoctorSchedule\Interface\Response\GetDoctorScheduleResponseInterface;
 
-interface ChooseDoctorScheduleClientInterface
+interface DoctorScheduleClientInterface
 {
     /**
      * @param GetBusyDatesRequestInterface $request
@@ -28,4 +30,11 @@ interface ChooseDoctorScheduleClientInterface
      * @throws ChooseDateFailedException
      */
     public function chooseDates(ChooseDatesRequestInterface $request): void;
+
+    /**
+     * @param GetDoctorScheduleRequestInterface $request
+     * @return GetDoctorScheduleResponseInterface
+     * @throws DoctorNotFoundException
+     */
+    public function getDoctorSchedule(GetDoctorScheduleRequestInterface $request): GetDoctorScheduleResponseInterface;
 }

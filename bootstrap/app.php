@@ -85,7 +85,8 @@ $app->bind(\App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface::class, 
 
 $app->bind(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class, function () use ($app) {
     return new \App\Hospital\Infrastructure\Repository\DoctorRepository(
-        $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface::class)
+        $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface::class),
+        $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class)
     );
 });
 
@@ -102,13 +103,32 @@ $app->bind(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositor
 $app->bind(\App\Hospital\Domain\DoctorSchedule\Interface\ChooseDoctorScheduleInterface::class, function () use ($app) {
     return new \App\Hospital\Domain\DoctorSchedule\ChooseDoctorSchedule(
         $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleBuilderInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleListInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\DoctorSchedule\DoctorScheduleList(
+        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface::class),
         $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class)
     );
 });
 
-$app->bind(\App\Hospital\Domain\DoctorSchedule\Interface\ChooseDoctorScheduleClientInterface::class, function () use ($app) {
-    return new \App\Hospital\Application\DoctorSchedule\ChooseDoctorScheduleClientUseCase(
-        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\ChooseDoctorScheduleInterface::class)
+$app->bind(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleClientInterface::class, function () use ($app) {
+    return new \App\Hospital\Application\DoctorSchedule\DoctorScheduleClientUseCase(
+        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\ChooseDoctorScheduleInterface::class),
+        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleListInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Department\Interface\DepartmentBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Department\DepartmentBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\DepartmentRepository(
+        $app->make(\App\Hospital\Domain\Department\Interface\DepartmentBuilderInterface::class)
     );
 });
 

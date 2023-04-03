@@ -11,7 +11,7 @@ export default class ChooseDatesRequest {
 
     public toRequest() {
         return {
-            dates: this.dates
+            dates: this.dates.map(date => date.toDateString())
         }
     }
 }

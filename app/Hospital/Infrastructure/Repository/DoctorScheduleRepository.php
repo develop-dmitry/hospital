@@ -10,6 +10,7 @@ use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterfa
 use App\Hospital\Domain\DoctorSchedule\DoctorSchedule;
 use App\Models\DoctorSchedule as DoctorScheduleModel;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class DoctorScheduleRepository implements DoctorScheduleRepositoryInterface
 {
@@ -35,20 +36,39 @@ class DoctorScheduleRepository implements DoctorScheduleRepositoryInterface
         return $result;
     }
 
-    public function chooseDates(int $doctorId, array $dates): void
+    public function chooseDates(array $schedules): void
     {
-        $data = [];
+        DB::beginTransaction();
 
-        foreach ($dates as $date) {
-            $data[] = [
-                'doctor_id' => $doctorId,
-                'date' => $date
-            ];
+        foreach ($schedules as $schedule) {
+            $success = DoctorScheduleModel::create([
+                'doctor_id' => $schedule->getDoctorId(),
+                'date' => $schedule->getDate()
+            ]);
+
+            if (!$success) {
+                DB::rollBack();
+
+                throw new ChooseDateFailedException('Failed to choose the dates of work schedule');
+            }
         }
 
-        if (!DoctorScheduleModel::insert($data)) {
-            throw new ChooseDateFailedException('Failed to choose the dates of work schedule');
+        DB::commit();
+    }
+
+    public function getDoctorSchedule(int $doctorId): array
+    {
+        $doctorSchedules = DoctorScheduleModel::where('doctor_id', $doctorId)
+            ->orderBy('date')
+            ->get();
+
+        $result = [];
+
+        foreach ($doctorSchedules as $doctorSchedule) {
+            $result[] = $this->makeEntity($doctorSchedule);
         }
+
+        return $result;
     }
 
     protected function makeEntity(DoctorScheduleModel $doctorScheduleModel): DoctorSchedule

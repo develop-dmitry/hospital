@@ -64,4 +64,18 @@ class UserRepositoryTest extends TestCase
         $this->expectException(UserNotFoundException::class);
         $this->userRepository->findByEmail($this->user->getEmail());
     }
+
+    public function testUpdateUserSuccess(): void
+    {
+        $user = clone $this->user;
+        $userId = $this->userRepository->saveUser($user);
+
+        $user
+            ->setId($userId)
+            ->setName('test123456');
+        $this->userRepository->saveUser($user);
+
+        $user = $this->userRepository->findByEmail($user->getEmail());
+        $this->assertEquals('test123456', $user->getName());
+    }
 }

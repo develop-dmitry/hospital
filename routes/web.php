@@ -52,9 +52,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {
-            $router->get('busy', ['uses' => 'ChooseDoctorScheduleController@getBusyDates']);
+            $router->get('/', ['uses' => 'DoctorScheduleController@getDoctorSchedule']);
 
-            $router->post('choose', ['uses' => 'ChooseDoctorScheduleController@chooseDates']);
+            $router->get('busy', ['uses' => 'DoctorScheduleController@getBusyDates']);
+
+            $router->post('choose', ['uses' => 'DoctorScheduleController@chooseDates']);
         });
     });
 });

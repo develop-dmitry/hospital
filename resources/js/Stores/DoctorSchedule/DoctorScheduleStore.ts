@@ -3,28 +3,22 @@ import Ajax from "../../Tools/Ajax";
 import GetBusyDatesResponse from "./DTO/GetBusyDatesResponse";
 import ChooseDatesRequest from "./DTO/ChooseDatesRequest";
 import ChooseDatesResponse from "./DTO/ChooseDatesResponse";
+import GetDoctorScheduleResponse from "./DTO/GetDoctorScheduleResponse";
 
 export const useDoctorScheduleStore = defineStore('doctorScheduleStore', {
-    state() {
-        return {
-            busyDates: [] as Array<Date>
-        }
-    },
-
     actions: {
         async getBusyDates() {
             const response = await Ajax.get('/schedule/busy');
+            const busyDates: Array<Date> = [];
 
             if (response.success) {
-                this.busyDates = [];
-
                 response.dates.forEach((date: number) => {
-                    this.busyDates.push(new Date(date));
+                    busyDates.push(new Date(date * 1000));
                 })
             }
 
             return new GetBusyDatesResponse(
-                this.busyDates,
+                busyDates,
                 response.success ?? false,
                 response.message ?? ''
             );
@@ -34,6 +28,24 @@ export const useDoctorScheduleStore = defineStore('doctorScheduleStore', {
             const response = await Ajax.post('/schedule/choose', request.toRequest());
 
             return new ChooseDatesResponse(response.success ?? false, response.message ?? '');
+        },
+
+        async getDoctorSchedule() {
+            const response = await Ajax.get('/schedule');
+
+            const items: Array<Date> = [];
+
+            if (response.success) {
+                response.items.forEach((item: number) => {
+                    items.push(new Date(item * 1000))
+                });
+            }
+
+            return new GetDoctorScheduleResponse(
+                response.success,
+                items,
+                response.message ?? ''
+            )
         }
     }
 })

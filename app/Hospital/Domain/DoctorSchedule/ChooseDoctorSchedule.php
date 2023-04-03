@@ -8,6 +8,7 @@ use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\DoctorSchedule\Exception\ChooseBusyDateException;
 use App\Hospital\Domain\DoctorSchedule\Interface\ChooseDoctorScheduleInterface;
+use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleBuilderInterface;
 use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface;
 use DateTime;
 
@@ -15,7 +16,8 @@ class ChooseDoctorSchedule implements ChooseDoctorScheduleInterface
 {
     public function __construct(
         protected DoctorScheduleRepositoryInterface $doctorScheduleRepository,
-        protected DoctorRepositoryInterface $doctorRepository
+        protected DoctorRepositoryInterface $doctorRepository,
+        protected DoctorScheduleBuilderInterface $doctorScheduleBuilder
     ) {
     }
 
@@ -44,7 +46,16 @@ class ChooseDoctorSchedule implements ChooseDoctorScheduleInterface
             throw new ChooseBusyDateException('The date array contains busy dates');
         }
 
-        $this->doctorScheduleRepository->chooseDates($doctor->getId(), $dates);
+        $schedules = [];
+
+        foreach ($dates as $date) {
+            $schedules[] = $this->doctorScheduleBuilder
+                ->setDoctorId($doctor->getId())
+                ->setDate($date)
+                ->make();
+        }
+
+        $this->doctorScheduleRepository->chooseDates($schedules);
     }
 
     /**
@@ -55,10 +66,10 @@ class ChooseDoctorSchedule implements ChooseDoctorScheduleInterface
      */
     protected function hasBusyDates(int $userId, array $dates): bool
     {
-        $busyDates = array_map(static fn ($date) => $date->getTimestamp(),  $this->getBusyDates($userId));
+        $busyDates = array_map(static fn ($date) => $date->format('Y-m-d'),  $this->getBusyDates($userId));
 
         foreach ($dates as $date) {
-            if (in_array($date->getTimestamp(), $busyDates, true)) {
+            if (in_array($date->format('Y-m-d'), $busyDates, true)) {
                 return true;
             }
         }

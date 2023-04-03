@@ -1,9 +1,10 @@
 <template lang="pug">
 form.choose-schedule-form(:class="componentClass" @submit.prevent="submit")
-    Error(:errors="errors")
+    Message(:messages="messages" :message-type="messageType")
     Calendar(
         :max-month-offset="1"
         :selected-dates="selectedDates"
+        :disabled-dates="busyDates"
         @select="selectDate"
         @unselect="unselectDate"
     )
@@ -16,7 +17,7 @@ import ComponentClassMixin from "../../../Mixins/ComponentClassMixin";
 import FormMixin from "../../../Mixins/FormMixin";
 import Calendar from "../../../Form/Calendar/Calendar.vue";
 import Button from "../../../Form/Button/Button.vue";
-import Error from "../../../Form/Error/Error.vue";
+import Message from "../../../Form/Message/Message.vue";
 import DateCompare from "../../../../Tools/Date/DateCompare";
 import {useDoctorScheduleStore} from "../../../../Stores/DoctorSchedule/DoctorScheduleStore";
 import ChooseDatesRequest from "../../../../Stores/DoctorSchedule/DTO/ChooseDatesRequest";
@@ -32,13 +33,14 @@ export default defineComponent({
     components: {
         Calendar,
         Button,
-        Error
+        Message
     },
 
     data() {
         return {
             selectedDates: [] as Array<Date>,
-            isSubmit: false,
+            busyDates: [] as Array<Date>,
+            isSubmit: false
         }
     },
 
@@ -58,12 +60,14 @@ export default defineComponent({
         submit() {
             this.isSubmit = true;
 
-            this.clearErrors();
+            this.clearMessages();
 
             this.doctorScheduleStore.chooseDates(new ChooseDatesRequest(this.selectedDates))
                 .then((response) => {
                     if (response.success) {
-                        this.addError('Выбранные дни успешно добавлены в график');
+                        this.loadBusyDates();
+                        this.selectedDates = [];
+                        this.addSuccess('Выбранные дни успешно добавлены в график');
                     } else {
                         this.addError(response.message);
                     }
@@ -82,15 +86,26 @@ export default defineComponent({
 
         unselectDate(date: Date) {
             this.selectedDates = this.selectedDates.filter(current => !DateCompare.equalDate(current, date));
+        },
+
+        loadBusyDates() {
+            this.doctorScheduleStore.getBusyDates()
+                .then((response) => {
+                    if (response.success) {
+                        this.busyDates = response.dates;
+                    }
+                })
         }
+    },
+
+    mounted() {
+        this.loadBusyDates();
     },
 
     setup() {
         const doctorScheduleStore = useDoctorScheduleStore();
 
-        return {
-            doctorScheduleStore
-        }
+        return { doctorScheduleStore }
     }
 })
 </script>

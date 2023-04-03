@@ -1,6 +1,6 @@
 <template lang="pug">
 form.authorization-form(:class="componentClass" @submit.prevent="submit")
-    Error(:errors="errors" :component-class="['authorization-form__error']")
+    Message(:messages="messages" :message-type="messageType" :component-class="['authorization-form__error']")
     .authorization-form__row
         Input(placeholder="E-mail" :value="form.email" :error="fieldErrors.email" @change="setEmail")
     .authorization-form__row
@@ -16,7 +16,7 @@ import FormMixin from "../../Mixins/FormMixin";
 import Input from "../../Form/Input/Input.vue";
 import Button from "../../Form/Button/Button.vue";
 import PasswordInput from "../../Form/Input/PasswordInput/PasswordInput.vue";
-import Error from "../../Form/Error/Error.vue";
+import Message from "../../Form/Message/Message.vue";
 import {useUserStore} from "../../../Stores/User/UserStore";
 import AuthRequest from "../../../Stores/User/DTO/AuthRequest";
 
@@ -32,7 +32,7 @@ export default defineComponent({
         Input,
         PasswordInput,
         Button,
-        Error
+        Message
     },
 
     emits: [
@@ -67,7 +67,8 @@ export default defineComponent({
                 return;
             }
 
-            this.clearErrors()
+            this.clearMessages();
+            this.clearErrors();
 
             if (!this.validate()) {
                 return;
@@ -117,8 +118,6 @@ export default defineComponent({
             Object.keys(this.fieldErrors).forEach((key) => {
                 this.fieldErrors[key] = '';
             })
-
-            this.errors = [];
         },
 
        setEmail(email: string) {

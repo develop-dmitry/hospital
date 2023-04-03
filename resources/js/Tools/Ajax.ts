@@ -10,7 +10,7 @@ export default class Ajax {
     }
 
     public static async get(url: string) {
-        const response = await axios.get(url);
+        const response = await axios.get(this.api + url);
 
         return response.data;
     }

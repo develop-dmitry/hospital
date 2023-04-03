@@ -1,6 +1,6 @@
 <template lang="pug">
 form.upload-analyzes-form
-    Error(:errors="errors")
+    Message(:messages="messages" :message-type="messageType")
     .upload-analyzes-form__row
         Select(placeholder="Выбрать пользователя")
     .upload-analyzes-form__row
@@ -17,9 +17,10 @@ import FileInput from "../../../Form/Input/FileInput/FileInput.vue";
 import Select from "../../../Form/Input/Select/Select.vue";
 import Button from "../../../Form/Button/Button.vue";
 import Input from "../../../Form/Input/Input.vue";
-import Error from "../../../Form/Error/Error.vue";
+import Message from "../../../Form/Message/Message.vue";
 import FormMixin from "../../../Mixins/FormMixin";
 import FileExtension from "../../../Form/Input/FileInput/FileExtension";
+import MessageType from "../../../Form/Message/MessageType";
 
 export default defineComponent({
     name: 'UploadAnalyzesForm',
@@ -33,20 +34,21 @@ export default defineComponent({
         Select,
         Button,
         Input,
-        Error
+        Message
     },
 
     data() {
         return {
             allowedExtensions: [FileExtension.PDF],
+            messageType: MessageType.error
         }
     },
 
     methods: {
         submit() {
-            this.clearErrors();
+            this.clearMessages();
 
-            this.addError('Прозиошла ошибка');
+            this.addError('Произошла ошибка');
         },
     }
 })
