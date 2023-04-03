@@ -18,7 +18,7 @@ services:
 
   php-fpm:
     build:
-      context: ./docker/php-fpmг
+      context: ./docker/php-fpm
       args:
         WWWGROUP: ${WWWGROUP}
         WWWUSER: ${WWWUSER}
