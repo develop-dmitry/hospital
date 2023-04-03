@@ -1,5 +1,5 @@
 server {
-    listen 80;
+    listen 443 ssl;
 
     server_name ${APP_URL};
 
@@ -24,4 +24,16 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
+}
+
+server {
+    if ($host = ${APP_URL}) {
+        return 301 https://$host$request_uri;
+    }
+
+    listen 80;
+
+    server_name ${APP_URL};
+
+    return 404;
 }
