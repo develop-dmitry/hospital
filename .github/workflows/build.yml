@@ -1,0 +1,19 @@
+name: Build
+on: workflow_call
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from repository
+        uses: actions/checkout@v3
+      - name: Create .env
+        run: |
+          cp .env.example .env
+          sed -i -- "s|%WWWUSER%|$UID|g" .env
+          sed -i -- "s|%WWWGROUP%|$UID|g" .env
+      - name: Start docker-compose
+        run: docker-compose up -d --build
+      - name: Install composer
+        run: docker exec hospital_web composer install --ignore-platform-reqs
+      - name: Install migrate
+        run: docker exec hospital_web php artisan migrate
