@@ -52,5 +52,5 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 });
 
 $router->get('/', function () {
-    return 'Hello world!!!';
+    return 'Hello CI/CD!';
 });
