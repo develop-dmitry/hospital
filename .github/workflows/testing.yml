@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: Get code from repository
         uses: actions/checkout@v3
+      - name: Copy environment
+        run: cp .env.example .env
       - name: Start docker-compose
         run: docker-compose up -d --build
       - name: Install composer
