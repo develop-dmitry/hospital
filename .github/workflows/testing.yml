@@ -1,0 +1,16 @@
+name: PHP Unit Tests
+on: dispatch_event
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from repository
+        uses: actions/checkout@v3
+      - name: Start docker-compose
+        run: docker-compose up -d --build
+      - name: Install composer
+        run: docker exec hospital_web composer install --ignore-platform-reqs
+      - name: Install migrate
+        run: docker exec hospital_web php artisan migrate
+      - name: Test application
+        run: docker exec hospital_web composer run tests
