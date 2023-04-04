@@ -5,8 +5,56 @@ on:
     branches:
       - main
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code from repository
+        uses: actions/checkout@v3
+      - name: Create .env
+        run: cp .env.example .env &&
+          sed -i -- "s|%WWWUSER%|$UID|g" .env &&
+          sed -i -- "s|%WWWGROUP%|$UID|g" .env &&
+          sed -i -- "s|%APP_NAME%|${{ secrets.APP_NAME }}|g" .env &&
+          sed -i -- "s|%APP_DEBUG%|${{ secrets.APP_DEBUG }}|g" .env &&
+          sed -i -- "s|%APP_URL%|${{ secrets.APP_URL }}|g" .env &&
+          sed -i -- "s|%DB_NAME%|${{ secrets.DB_NAME }}|g" .env &&
+          sed -i -- "s|%DB_USERNAME%|${{ secrets.DB_USERNAME }}|g" .env &&
+          sed -i -- "s|%DB_PASSWORD%|${{ secrets.DB_PASSWORD }}|g" .env &&
+          sed -i -- "s|%REDIS_HOST%|${{ secrets.REDIS_HOST }}|g" .env
+      - name: Start docker
+        run: docker-compose up -d --build
+      - name: Build
+        run: docker exec hospital_web composer install --ignore-platform-reqs &&
+          docker exec hospital_web npm install &&
+          docker exec hospital_web npm run build &&
+          docker exec hospital_web php artisan migrate
+  tests:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Get code from repository
+        uses: actions/checkout@v3
+      - name: Create .env
+        run: cp .env.example .env &&
+          sed -i -- "s|%WWWUSER%|$UID|g" .env &&
+          sed -i -- "s|%WWWGROUP%|$UID|g" .env &&
+          sed -i -- "s|%APP_NAME%|${{ secrets.APP_NAME }}|g" .env &&
+          sed -i -- "s|%APP_DEBUG%|${{ secrets.APP_DEBUG }}|g" .env &&
+          sed -i -- "s|%APP_URL%|${{ secrets.APP_URL }}|g" .env &&
+          sed -i -- "s|%DB_NAME%|${{ secrets.DB_NAME }}|g" .env &&
+          sed -i -- "s|%DB_USERNAME%|${{ secrets.DB_USERNAME }}|g" .env &&
+          sed -i -- "s|%DB_PASSWORD%|${{ secrets.DB_PASSWORD }}|g" .env &&
+          sed -i -- "s|%REDIS_HOST%|${{ secrets.REDIS_HOST }}|g" .env
+      - name: Start docker
+        run: docker-compose up -d --build
+      - name: Build
+        run: docker exec hospital_web composer install --ignore-platform-reqs &&
+          docker exec hospital_web php artisan migrate
+      - name: Test
+        run: docker exec hospital_web composer run tests
   deploy:
     runs-on: ubuntu-latest
+    needs: tests
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
