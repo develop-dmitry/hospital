@@ -12,7 +12,5 @@ jobs:
           known_hosts: ${{ secrets.SSH_HOST }}
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: Connect to server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-      - name: Get code from repository
-        run: git clone git@github.com:develop-dmitry/hospital.git
+      - name: Deploy
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "git clone git@github.com:develop-dmitry/hospital.git"
