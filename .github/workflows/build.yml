@@ -1,5 +1,7 @@
+name: Deploy to production
+on: workflow_dispatch
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code from repository
@@ -15,3 +17,16 @@ jobs:
         run: docker exec hospital_web composer install --ignore-platform-reqs
       - name: Install migrate
         run: docker exec hospital_web php artisan migrate
+      - name: Test application
+        run: docker exec hospital_web composer run tests
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_HOST }}
+      - name: Connect to server
+        run: ssh ${{ secrets.SSH_USER }}:${{ secrets.SSH_HOST }}

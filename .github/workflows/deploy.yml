@@ -1,0 +1,13 @@
+name: Deploy to production
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.SSH_HOST }}
+      - name: Connect to server
+        run: ssh ${{ secrets.SSH_USER }}:${{ secrets.SSH_HOST }}

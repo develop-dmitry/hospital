@@ -46,18 +46,6 @@ services:
     networks:
       - network
 
-  rabbitmq:
-    image: rabbitmq:3
-    hostname: rabbitmq
-    ports:
-      - ${RABBITMQ_PORT}:15672
-      - ${AMQP_PORT}:5672
-    environment:
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-    networks:
-      - network
-
   redis:
     image: redis:latest
     volumes:
