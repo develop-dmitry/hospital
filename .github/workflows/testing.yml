@@ -1,5 +1,5 @@
 name: PHP Unit Tests
-on: dispatch_event
+on: workflow_dispatch
 jobs:
   test:
     runs-on: ubuntu-latest
