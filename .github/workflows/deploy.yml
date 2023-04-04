@@ -25,5 +25,9 @@ jobs:
           sed -i -- 's|%DB_NAME%|${{ secrets.DB_NAME }}|g' .env &&
           sed -i -- 's|%DB_USERNAME%|${{ secrets.DB_USERNAME }}|g' .env &&
           sed -i -- 's|%DB_PASSWORD%|${{ secrets.DB_PASSWORD }}|g' .env &&
-          sed -i -- 's|%REDIS_HOST%|${{ secrets.REDIS_HOST }}|g' .env
-          "
+          sed -i -- 's|%REDIS_HOST%|${{ secrets.REDIS_HOST }}|g' .env &&
+          docker-compose up -d --build &&
+          docker exec hospital_web composer install --ignore-platform-reqs &&
+          docker exec hospital_web npm install &&
+          docker exec hospital_web npm run build &&
+          docker exec hospital_web php artisan migrate"
