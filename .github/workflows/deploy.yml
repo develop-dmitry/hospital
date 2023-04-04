@@ -16,8 +16,8 @@ jobs:
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /var/www/hospital &&
           git pull &&
           cp .env.example .env &&
-          sed -i -- 's|%WWWUSER%|33|g' .env &&
-          sed -i -- 's|%WWWGROUP%|33|g' .env &&
+          sed -i -- 's|%WWWUSER%|${{ secrets.WWWUSER }}|g' .env &&
+          sed -i -- 's|%WWWGROUP%|${{ secrets.WWWGROUP }}|g' .env &&
           sed -i -- 's|%APP_NAME%|${{ secrets.APP_NAME }}|g' .env &&
           sed -i -- 's|%APP_DEBUG%|${{ secrets.APP_DEBUG }}|g' .env &&
           sed -i -- 's|%APP_URL%|${{ secrets.APP_URL }}|g' .env &&
@@ -26,7 +26,6 @@ jobs:
           sed -i -- 's|%DB_PASSWORD%|${{ secrets.DB_PASSWORD }}|g' .env &&
           sed -i -- 's|%REDIS_HOST%|${{ secrets.REDIS_HOST }}|g' .env &&
           docker-compose stop &&
-          sudo chown www-data:www-data /var/www/hospital -R &&
           docker-compose up -d --build &&
           docker exec hospital_web composer install --ignore-platform-reqs &&
           docker exec hospital_web npm install &&
