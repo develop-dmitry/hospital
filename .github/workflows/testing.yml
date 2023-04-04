@@ -9,8 +9,8 @@ jobs:
       - name: Create .env
         run: |
           cp .env.example .env
-          -u www-data sed -i -- "s|%WWWUSER%|$UID|g" .env
-          -u www-data sed -i -- "s|%WWWGROUP%|$UID|g" .env
+          sudo -u www-data sed -i -- "s|%WWWUSER%|$UID|g" .env
+          sudo -u www-data sed -i -- "s|%WWWGROUP%|$UID|g" .env
       - name: Start docker-compose
         run: docker-compose up -d --build
       - name: Install composer
