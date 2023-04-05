@@ -12,7 +12,7 @@ export default defineComponent({
 
     data() {
         return {
-            componentValue: '' as string|number,
+            componentValue: this.value as string|number,
             quietUpdate: false as boolean
         }
     },
@@ -37,23 +37,8 @@ export default defineComponent({
     },
 
     watch: {
-        value: {
-            handler(value) {
-                this.quietUpdate = true;
-                this.componentValue = value;
-            },
-            immediate: true
-        },
-
-        componentValue: {
-            handler(value) {
-                if(!this.quietUpdate) {
-                    this.$emit('change', value);
-                }
-
-                this.quietUpdate = false;
-            },
-            immediate: true
+        componentValue(value) {
+            this.$emit('change', value);
         }
     },
 
