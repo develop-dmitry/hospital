@@ -15,10 +15,6 @@
 
 use Laravel\Lumen\Routing\Router;
 
-$router->get('/', ['as' => 'home', function () {
-    return view('home');
-}]);
-
 $router->group(['prefix' => 'profile'], function () use ($router) {
     $router->get('/', ['as' => 'profile', 'middleware' => ['auth'], function () {
         return view('profile.profile');
@@ -62,3 +58,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 });
 
 $router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
+
+$router->get('/', ['as' => 'home', function () {
+    return view('home');
+}]);
