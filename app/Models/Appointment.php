@@ -14,12 +14,14 @@ class Appointment extends Model
         'user_id',
         'doctor_id',
         'visit_date',
+        'visit_time',
         'visitor_name',
         'visitor_phone',
     ];
 
     protected $casts = [
         'visit_date' => 'datetime',
+        'visit_time' => 'datetime'
     ];
 
     public function user()
@@ -35,5 +37,13 @@ class Appointment extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public static function getAppointmentsByDate($date, $doctorId)
+    {
+        return self::whereDate('visit_date', $date)
+            ->where('doctor_id', $doctorId)
+            ->get()
+            ->toArray();
     }
 }

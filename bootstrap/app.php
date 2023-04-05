@@ -79,7 +79,7 @@ $app->bind(\App\Hospital\Domain\User\UserRepositoryInterface::class, function ()
     );
 });
 
-$app->bind(\App\Hospital\Application\Telegram\Client\ClientInterface::class, function () {
+$app->bind(\App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface::class, function () {
     return new App\Hospital\Application\Telegram\Client\Client();
 });
 /*

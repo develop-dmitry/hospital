@@ -19,7 +19,8 @@ class User extends Model
         'email',
         'login',
         'password',
-        'auth_token'
+        'auth_token',
+        'telegram_id'
     ];
 
     /**
@@ -45,5 +46,10 @@ class User extends Model
     public function analyses()
     {
         return $this->hasMany(Analysis::class);
+    }
+
+    public function getName()
+    {
+        return $this->attributes['name'];
     }
 }

@@ -18,7 +18,8 @@ class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
         protected UserBuilderInterface $userBuilder,
-    ) {
+    )
+    {
     }
 
     public function findByEmail(string $email): User
@@ -82,5 +83,33 @@ class UserRepository implements UserRepositoryInterface
         if (!UserModel::whereId($id)->delete()) {
             throw new UserDropFailedException("Failed to drop user with id $id");
         }
+    }
+
+    /**
+     * @throws UserNotFoundException
+     */
+    public function getIdByTelegramId(int $telegramId)
+    {
+        $userModel = UserModel::where('telegram_id', $telegramId)->firstOrFail();
+
+        if (!$userModel) {
+            throw new UserNotFoundException("User with telegram_id $telegramId not found");
+        }
+
+        return $userModel->id;
+    }
+
+    /**
+     * @throws UserNotFoundException
+     */
+    public function getNameById(int $id)
+    {
+        $userModel = UserModel::find($id);
+
+        if (!$userModel) {
+            throw new UserNotFoundException("User with id $id not found");
+        }
+
+        return $userModel->getName();
     }
 }

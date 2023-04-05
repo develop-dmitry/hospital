@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Telegram\Keyboard;
 
-use App\Hospital\Application\Telegram\Client\ClientInterface;
+use App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface;
 use App\Hospital\Application\Telegram\Tools\Tools;
 use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use App\Hospital\Infrastructure\Repository\DoctorRepository;
@@ -42,8 +42,8 @@ class ClientKeyboard
 
         $departmentsRepository = App::make(DepartmentRepository::class);
         $departments = $departmentsRepository->getAll();
+        $callbackData = ['m' => 'm_dt'];
 
-        $callbackData = ['m' => 'm_ar'];
         if (!empty($departments)) {
             array_map(function ($department) use ($keyboard, $callbackData) {
                 $callbackData['m_id'] = $department['id'];
@@ -70,8 +70,7 @@ class ClientKeyboard
 
         $doctorsRepository = App::make(DoctorRepository::class);
         $doctors = $doctorsRepository->getByDepartmentId($departmentId);
-
-        $callbackData = ['m' => 'm_ab'];
+        $callbackData = ['m' => 'm_dr'];
 
         if (!empty($doctors)) {
             array_map(function ($doctor) use ($keyboard, $callbackData, $doctorsRepository) {
@@ -99,13 +98,12 @@ class ClientKeyboard
 
         $doctorsScheduleRepository = App::make(DoctorScheduleRepository::class);
         $doctorsSchedule = $doctorsScheduleRepository->getByDoctorId($doctorId);
-
         $callbackData = [
             'm' => 'm_rg',
         ];
 
         if (!empty($doctorsSchedule)) {
-            array_map(function ($schedule) use ($keyboard, $callbackData, $doctorsScheduleRepository) {
+            array_map(function ($schedule) use ($keyboard, $callbackData) {
                 $date = date_format(date_create($schedule['date']), 'd.m.Y');
                 $callbackData['m_id'] = $date;
                 $callbackData['d_id'] = $schedule['doctor_id'];
@@ -125,13 +123,35 @@ class ClientKeyboard
         return $keyboard;
     }
 
-    public function getAppointmentKeyboard(string $scheduleDate, int $doctorId)
+    public function getAppointmentKeyboard($scheduleDate, $doctorId)
     {
-
         $keyboard = InlineKeyboardMarkup::make();
-        $dateRange = Tools::getDateRange($scheduleDate);
 
+        $dateRange = Tools::getTimeRange();
         $appointmentRepository = App::make(Appointment::class);
-    }
+        $dates = $appointmentRepository->getAppointmentsByDate($scheduleDate, $doctorId);
 
+        $availableDates = array_diff($dateRange, array_column($dates, 'visit_time'));
+        $callbackData = [
+            'm' => 'm_tm',
+        ];
+
+        if (!empty($availableDates)) {
+            array_map(function ($date) use ($keyboard, $callbackData) {
+                $callbackData['m_id'] = $date;
+
+                $keyboard->addRow(InlineKeyboardButton::make(
+                    $date,
+                    callback_data: json_encode($callbackData)
+                ));
+            }, $availableDates);
+        } else {
+            $keyboard->addRow(InlineKeyboardButton::make(
+                __('bot.schedule.non_active'),
+                callback_data: json_encode($callbackData)
+            ));
+        }
+
+        return $keyboard;
+    }
 }

@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Telegram\Client;
 
-use Illuminate\Support\Str;
+use App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface;
 
 class Client implements ClientInterface
 {
-    protected \App\Models\Client|null $model = null;
+    protected \App\Models\User|null $model = null;
 
     protected array $setFieldsList = [
-        'external_id' => null,
-        'first_name' => null,
-        'last_name' => null,
-        'telegram_login' => null,
+        'telegram_id' => null,
+        'name' => null,
     ];
+
+    public function __construct($telegramId = null)
+    {
+        $this->loadByTelegramId($telegramId);
+    }
+
     public function save(): bool
     {
         $fields = array_filter($this->setFieldsList, function ($value) {
             return $value !== null;
         });
-
-        \Log::info('fields=', $fields);
 
         if (empty($fields)) {
             return false;
@@ -30,46 +32,38 @@ class Client implements ClientInterface
 
         if ($this->exist()) {
             $this->model->update($fields);
-            \Log::info('model-', $this->model->toArray());
         } else {
-            if (!isset($fields['external_id'])) {
-                throw new \InvalidArgumentException('Не установлен external_id');
+            if (!isset($fields['telegram_id'])) {
+                throw new \InvalidArgumentException('Не установлен telegram_id');
+            }
+            $client = $this->findByTelegramId($fields['telegram_id']);
+
+            if (!$client) {
+                $client = \App\Models\User::create($fields);
             }
 
-            $fields['uuid'] = Str::uuid()->toString();
-
-            // проверим есть ли уже в базе клиент с таким external_id
-            $record = $this->findByExternalId($fields['external_id']);
-
-            if (!$record) {
-                $record = \App\Models\Client::create($fields);
-            }
-
-            if ($record) {
-                $this->model = $record;
+            if ($client) {
+                $this->model = $client;
             }
         }
 
         return true;
     }
 
-    public function __construct($externalId = null)
+
+    protected function loadByTelegramId($telegramId): void
     {
-        $this->loadByExternalId($externalId);
-    }
-    protected function loadByExternalId($externalId): void
-    {
-        $client = $this->findByExternalId($externalId);
+        $client = $this->findByTelegramId($telegramId);
 
         if ($client) {
             $this->model = $client;
         }
     }
 
-    protected function findByExternalId($externalId): ?\App\Models\Client
+    protected function findByTelegramId($telegramId): ?\App\Models\User
     {
-        return \App\Models\Client::where([
-            'external_id' => $externalId
+        return \App\Models\User::where([
+            'telegram_id' => $telegramId
         ])->first();
     }
 
@@ -80,53 +74,28 @@ class Client implements ClientInterface
         }
     }
 
-
     public function getId(): int
     {
         return $this->model->id;
     }
 
-    public function getExternalId(): int
+    public function getTelegramId(): int
     {
-        return $this->model->external_id;
+        return $this->model->telegram_id;
     }
 
-    public function setFirstName($value): static
+    public function setName(string $firstName, $secondName): static
     {
-        $this->setFields('first_name', $value);
+        $this->setFields('name', "$firstName $secondName");
 
         return $this;
     }
 
-    public function setLastName($value): static
+    public function setTelegramId($value): static
     {
-        $this->setFields('last_name', $value);
+        $this->setFields('telegram_id', $value);
 
         return $this;
-    }
-
-    public function setExternalId($value): static
-    {
-        $this->setFields('external_id', $value);
-
-        return $this;
-    }
-
-    public function setTelegramLogin($value): static
-    {
-        $this->setFields('telegram_login', $value);
-
-        return $this;
-    }
-
-    public function getUuid(): string
-    {
-        return $this->model->uuid;
-    }
-
-    public function getTelegramLogin(): ?string
-    {
-        return $this->model->telegram_login;
     }
 
     public function exist(): bool

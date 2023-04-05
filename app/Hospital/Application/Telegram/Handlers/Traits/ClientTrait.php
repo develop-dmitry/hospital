@@ -5,27 +5,35 @@ declare(strict_types=1);
 namespace App\Hospital\Application\Telegram\Handlers\Traits;
 
 use App\Hospital\Application\Telegram\Client\Client;
+use App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Redis;
 use SergiX44\Nutgram\Nutgram;
-use App\Hospital\Application\Telegram\Client\ClientInterface;
 
 trait ClientTrait
 {
     protected Client $client;
+    protected $redis;
+    protected string $redisKey;
 
     public function initClient(Nutgram $bot): void
     {
         $chatId = $bot->chatId();
+        $this->redisKey = "user:$chatId";
 
-        $client = App::makeWith(ClientInterface::class, ['externalId' => $chatId]);
+        $client = App::makeWith(ClientInterface::class, ['telegramId' => $chatId]);
+        $this->redis = Redis::connection()->client();
+
+        $this->redis->hmset($this->redisKey, [
+                'telegram_id' => $chatId
+            ]
+        );
 
         if (!$client->exist()) {
             try {
                 $client
-                    ->setExternalId($chatId)
-                    ->setTelegramLogin($bot->user()->username)
-                    ->setFirstName($bot->user()->first_name)
-                    ->setLastName($bot->user()->last_name)
+                    ->setTelegramId($chatId)
+                    ->setName($bot->user()->first_name, $bot->user()->last_name)
                     ->save();
             } catch (\Exception $e) {
                 \Log::error($e->getMessage());
@@ -34,7 +42,6 @@ trait ClientTrait
 
         $this->client = $client;
     }
-
 
     public function getClient(): Client
     {
