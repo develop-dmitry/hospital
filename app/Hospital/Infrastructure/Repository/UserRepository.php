@@ -87,4 +87,15 @@ class UserRepository implements UserRepositoryInterface
             throw new UserDropFailedException("Failed to drop user with id $id");
         }
     }
+
+    public function findById(int $id): User
+    {
+        try {
+            $userModel = UserModel::findOrFail($id);
+
+            return $this->userBuilder->makeFromModel($userModel);
+        } catch (ModelNotFoundException) {
+            throw new UserNotFoundException("User with id $id not found");
+        }
+    }
 }

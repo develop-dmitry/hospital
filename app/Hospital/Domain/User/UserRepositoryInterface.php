@@ -25,6 +25,13 @@ interface UserRepositoryInterface
     public function findByToken(string $token): User;
 
     /**
+     * @param int $id
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public function findById(int $id): User;
+
+    /**
      * @param User $user
      * @return int
      * @throws UserSaveFailedException

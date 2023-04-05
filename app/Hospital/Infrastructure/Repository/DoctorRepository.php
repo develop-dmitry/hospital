@@ -39,7 +39,7 @@ class DoctorRepository implements DoctorRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $user = $this->userRepository->findByEmail($doctor->getEmail());
+            $user = $this->userRepository->findById($doctor->getUserId());
 
             $user
                 ->setEmail($doctor->getEmail())
@@ -49,6 +49,11 @@ class DoctorRepository implements DoctorRepositoryInterface
             $this->userRepository->saveUser($user);
 
             $doctorModel = DoctorModel::find($doctor->getId());
+
+            if (!$doctorModel) {
+                $doctorModel = new DoctorModel();
+            }
+
             $doctorModel->fill([
                 'user_id' => $doctor->getUserId(),
                 'department_id' => $doctor->getDepartmentId()
