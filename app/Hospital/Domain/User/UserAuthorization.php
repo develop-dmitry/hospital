@@ -2,19 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\User;
+namespace App\Hospital\Domain\User;
 
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotAuthException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
-use App\Hospital\Domain\User\User;
-use App\Hospital\Domain\User\UserAuthorizationInterface;
-use App\Hospital\Domain\User\UserRepositoryInterface;
+use App\Hospital\Domain\User\Interface\UserAuthorizationInterface;
+use App\Hospital\Domain\User\Interface\UserRepositoryInterface;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Psr\Log\LoggerInterface;
 
 class UserAuthorization implements UserAuthorizationInterface
 {
@@ -46,7 +44,7 @@ class UserAuthorization implements UserAuthorizationInterface
 
     public function getUser(): User
     {
-        if ($this->isAuth()) {
+        if (!$this->isAuth()) {
             throw new UserNotAuthException('User not authorized');
         }
 

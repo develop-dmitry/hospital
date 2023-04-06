@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Domain\User;
+namespace App\Hospital\Domain\User\Interface;
 
-use \App\Models\User as UserModel;
+use App\Hospital\Domain\User\User;
+use App\Models\User as UserModel;
 
 interface UserBuilderInterface
 {
@@ -19,6 +20,8 @@ interface UserBuilderInterface
     public function setAuthToken(string $authToken): static;
 
     public function setLogin(string $login): static;
+
+    public function setIsDoctor(bool $isDoctor): static;
 
     public function make(): User;
 

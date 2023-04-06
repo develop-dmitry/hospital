@@ -12,7 +12,8 @@ class User
         protected string $login,
         protected string $email,
         protected string $password,
-        protected string $authToken
+        protected string $authToken,
+        protected bool $isDoctor
     ) {
     }
 
@@ -121,6 +122,24 @@ class User
     public function setAuthToken(string $authToken): User
     {
         $this->authToken = $authToken;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDoctor(): bool
+    {
+        return $this->isDoctor;
+    }
+
+    /**
+     * @param bool $isDoctor
+     * @return User
+     */
+    public function setIsDoctor(bool $isDoctor): User
+    {
+        $this->isDoctor = $isDoctor;
         return $this;
     }
 }

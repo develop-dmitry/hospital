@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Hospital\Domain\User\UserAuthorizationInterface;
+use App\Hospital\Domain\User\Interface\UserAuthorizationInterface;
 use Closure;
 use Illuminate\Http\Request;
 

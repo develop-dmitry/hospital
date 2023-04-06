@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Hospital\Application\User\UserAuthorization;
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
+use App\Hospital\Domain\User\UserAuthorization;
+use App\Hospital\Infrastructure\Repository\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ use Laravel\Lumen\Http\Redirector;
 class UserController extends Controller
 {
     public function __construct(
-        protected UserAuthorization $userAuthorization
+        protected UserAuthorization $userAuthorization,
+        protected UserRepository $userRepository
     ) {
     }
 

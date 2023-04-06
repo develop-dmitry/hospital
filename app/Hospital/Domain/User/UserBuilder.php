@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\User;
+namespace App\Hospital\Domain\User;
 
-use App\Hospital\Domain\User\User;
-use App\Hospital\Domain\User\UserBuilderInterface;
+use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Models\User as UserModel;
 
 class UserBuilder implements UserBuilderInterface
@@ -19,6 +18,8 @@ class UserBuilder implements UserBuilderInterface
     protected string $authToken = '';
 
     protected string $login = '';
+
+    protected bool $isDoctor = false;
 
     protected int $id = 0;
 
@@ -58,6 +59,12 @@ class UserBuilder implements UserBuilderInterface
         return $this;
     }
 
+    public function setIsDoctor(bool $isDoctor): static
+    {
+        $this->isDoctor = $isDoctor;
+        return $this;
+    }
+
     public function make(): User
     {
         $user = new User(
@@ -66,7 +73,8 @@ class UserBuilder implements UserBuilderInterface
             $this->login,
             $this->email,
             $this->password,
-            $this->authToken
+            $this->authToken,
+            $this->isDoctor
         );
 
         $this->reset();
@@ -81,7 +89,8 @@ class UserBuilder implements UserBuilderInterface
             ->setPassword($model->password ?: '')
             ->setLogin($model->login ?: '')
             ->setAuthToken($model->auth_token ?: '')
-            ->setName($model->name ?: '');
+            ->setName($model->name ?: '')
+            ->setIsDoctor(!empty($model->doctors()->get()));
 
         return $this->make();
     }

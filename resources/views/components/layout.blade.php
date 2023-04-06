@@ -18,7 +18,9 @@
         <div class="container">
             <div class="header__row">
                 <div class="header__logo">
-                    {{ env('APP_NAME') }}
+                    <a href="/">
+                        {{ env('APP_NAME') }}
+                    </a>
                 </div>
                 <x-menu
                     :tagClasses="['header__nav']"
