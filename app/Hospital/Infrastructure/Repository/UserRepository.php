@@ -47,6 +47,10 @@ class UserRepository implements UserRepositoryInterface
     {
         $userModel = UserModel::find($user->getId());
 
+        if (!$userModel) {
+            $userModel = new UserModel();
+        }
+
         $userModel->fill([
             'name' => $user->getName(),
             'email' => $user->getEmail(),
@@ -56,7 +60,7 @@ class UserRepository implements UserRepositoryInterface
         ]);
 
         if (!$userModel->save()) {
-            throw new UserSaveFailedException("Failed to save user with id {$userModel->id}");
+            throw new UserSaveFailedException("Failed to save user");
         }
 
         return $userModel->id;
@@ -81,6 +85,17 @@ class UserRepository implements UserRepositoryInterface
     {
         if (!UserModel::whereId($id)->delete()) {
             throw new UserDropFailedException("Failed to drop user with id $id");
+        }
+    }
+
+    public function findById(int $id): User
+    {
+        try {
+            $userModel = UserModel::findOrFail($id);
+
+            return $this->userBuilder->makeFromModel($userModel);
+        } catch (ModelNotFoundException) {
+            throw new UserNotFoundException("User with id $id not found");
         }
     }
 }

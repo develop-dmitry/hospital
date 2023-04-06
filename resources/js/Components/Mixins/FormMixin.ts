@@ -1,19 +1,32 @@
 import {defineComponent} from "vue";
+import MessageType from "../Form/Message/MessageType";
 
 export default defineComponent({
     data() {
         return {
-            errors: [] as Array<String>
+            messages: [] as Array<String>,
+            messageType: MessageType.notification
         }
     },
 
     methods: {
-        clearErrors() {
-            this.errors = []
+        clearMessages() {
+            this.messages = []
+        },
+
+        addMessage(message: string) {
+            this.messageType = MessageType.notification;
+            this.messages.push(message);
         },
 
         addError(error: string) {
-            this.errors.push(error);
+            this.messageType = MessageType.error;
+            this.messages.push(error);
+        },
+
+        addSuccess(success: string) {
+            this.messageType = MessageType.success;
+            this.messages.push(success);
         }
     }
 })

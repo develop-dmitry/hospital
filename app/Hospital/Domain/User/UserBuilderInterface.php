@@ -20,6 +20,8 @@ interface UserBuilderInterface
 
     public function setLogin(string $login): static;
 
+    public function setIsDoctor(bool $isDoctor): static;
+
     public function make(): User;
 
     public function makeFromModel(UserModel $model): User;

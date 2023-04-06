@@ -20,6 +20,8 @@ class UserBuilder implements UserBuilderInterface
 
     protected string $login = '';
 
+    protected bool $isDoctor = false;
+
     protected int $id = 0;
 
     public function setId(int $id): static
@@ -58,6 +60,12 @@ class UserBuilder implements UserBuilderInterface
         return $this;
     }
 
+    public function setIsDoctor(bool $isDoctor): static
+    {
+        $this->isDoctor = $isDoctor;
+        return $this;
+    }
+
     public function make(): User
     {
         $user = new User(
@@ -66,7 +74,8 @@ class UserBuilder implements UserBuilderInterface
             $this->login,
             $this->email,
             $this->password,
-            $this->authToken
+            $this->authToken,
+            $this->isDoctor
         );
 
         $this->reset();
@@ -81,7 +90,8 @@ class UserBuilder implements UserBuilderInterface
             ->setPassword($model->password ?: '')
             ->setLogin($model->login ?: '')
             ->setAuthToken($model->auth_token ?: '')
-            ->setName($model->name ?: '');
+            ->setName($model->name ?: '')
+            ->setIsDoctor(!empty($model->doctors()->get()));
 
         return $this->make();
     }
