@@ -11,7 +11,7 @@ use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use App\Hospital\Domain\DoctorSchedule\Exception\ChooseBusyDateException;
 use App\Hospital\Domain\DoctorSchedule\Exception\ChooseDateFailedException;
 use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleClientInterface;
-use App\Hospital\Domain\User\UserAuthorizationInterface;
+use App\Hospital\Domain\User\Interface\UserAuthorizationInterface;
 use DateTime;
 use Exception;
 use Illuminate\Http\JsonResponse;

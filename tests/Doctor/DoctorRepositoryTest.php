@@ -8,7 +8,7 @@ use App\Hospital\Domain\Department\Interface\DepartmentBuilderInterface;
 use App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface;
 use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface;
-use App\Hospital\Domain\User\UserBuilderInterface;
+use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Hospital\Infrastructure\Repository\DoctorRepository;
 use App\Hospital\Infrastructure\Repository\UserRepository;
 use Laravel\Lumen\Testing\DatabaseTransactions;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\View\Components;
 
-use App\Hospital\Domain\User\UserAuthorizationInterface;
+use App\Hospital\Domain\User\Interface\UserAuthorizationInterface;
 use Illuminate\Http\Request;
 use Illuminate\View\Component;
 

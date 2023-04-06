@@ -62,20 +62,20 @@ $app->singleton('session.store', function () use ($app) {
     );
 });
 
-$app->singleton(\App\Hospital\Domain\User\UserAuthorizationInterface::class, function () use ($app) {
-    return new \App\Hospital\Application\User\UserAuthorization(
-        $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class),
+$app->singleton(\App\Hospital\Domain\User\Interface\UserAuthorizationInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\User\UserAuthorization(
+        $app->make(\App\Hospital\Domain\User\Interface\UserRepositoryInterface::class),
         $app->get('session')
     );
 });
 
-$app->bind(\App\Hospital\Domain\User\UserBuilderInterface::class, function () {
-    return new \App\Hospital\Application\User\UserBuilder();
+$app->bind(\App\Hospital\Domain\User\Interface\UserBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\User\UserBuilder();
 });
 
-$app->bind(\App\Hospital\Domain\User\UserRepositoryInterface::class, function () use ($app) {
+$app->bind(\App\Hospital\Domain\User\Interface\UserRepositoryInterface::class, function () use ($app) {
     return new \App\Hospital\Infrastructure\Repository\UserRepository(
-        $app->make(\App\Hospital\Domain\User\UserBuilderInterface::class)
+        $app->make(\App\Hospital\Domain\User\Interface\UserBuilderInterface::class)
     );
 });
 
@@ -86,7 +86,7 @@ $app->bind(\App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface::class, 
 $app->bind(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class, function () use ($app) {
     return new \App\Hospital\Infrastructure\Repository\DoctorRepository(
         $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorBuilderInterface::class),
-        $app->make(\App\Hospital\Domain\User\UserRepositoryInterface::class)
+        $app->make(\App\Hospital\Domain\User\Interface\UserRepositoryInterface::class)
     );
 });
 

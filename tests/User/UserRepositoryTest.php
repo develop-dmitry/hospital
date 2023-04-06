@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\User;
 
-use App\Hospital\Application\User\UserBuilder;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\User;
+use App\Hospital\Domain\User\UserBuilder;
 use App\Hospital\Infrastructure\Repository\UserRepository;
-use Tests\TestCase;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class UserRepositoryTest extends TestCase
 {
