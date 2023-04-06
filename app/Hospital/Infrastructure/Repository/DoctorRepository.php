@@ -10,7 +10,7 @@ use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use App\Hospital\Domain\Doctor\Exception\DoctorSaveFailedException;
 use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
-use App\Hospital\Domain\User\UserRepositoryInterface;
+use App\Hospital\Domain\User\Interface\UserRepositoryInterface;
 use App\Models\Doctor as DoctorModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;

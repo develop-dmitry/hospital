@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\User;
 
-use App\Hospital\Application\User\UserAuthorization;
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
+use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Hospital\Domain\User\User;
-use App\Hospital\Domain\User\UserBuilderInterface;
+use App\Hospital\Domain\User\UserAuthorization;
 use App\Hospital\Infrastructure\Repository\UserRepository;
 use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Hash;

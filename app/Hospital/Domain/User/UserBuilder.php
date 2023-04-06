@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\User;
+namespace App\Hospital\Domain\User;
 
-use App\Hospital\Domain\User\User;
-use App\Hospital\Domain\User\UserBuilderInterface;
+use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Models\User as UserModel;
 
 class UserBuilder implements UserBuilderInterface
