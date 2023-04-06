@@ -6,7 +6,6 @@ namespace App\Hospital\Application\Telegram\Handlers;
 
 use App\Hospital\Application\Telegram\Handlers\Interfaces\HandlerInterface;
 use App\Hospital\Application\Telegram\Handlers\Traits\ClientTrait;
-use App\Telegram\Handlers\Traits\BotClientTrait;
 use SergiX44\Nutgram\Nutgram;
 
 abstract class BaseHandler implements HandlerInterface

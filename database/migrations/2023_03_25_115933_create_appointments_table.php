@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('user_id');
             $table->date('visit_date');
-            $table->time('visit_time');
+            $table->time('visit_time')->nullable();
             $table->string('visitor_name');
             $table->string('visitor_phone')->nullable();
             $table->unsignedBigInteger('doctor_id');

@@ -15,7 +15,7 @@ class Client implements ClientInterface
         'name' => null,
     ];
 
-    public function __construct($telegramId = null)
+    public function __construct(int $telegramId)
     {
         $this->loadByTelegramId($telegramId);
     }

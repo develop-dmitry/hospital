@@ -11,6 +11,6 @@ class AnalyzesSeeder extends Seeder
 {
     public function run()
     {
-        Analysis::factory()->count(10)->create();
+        Analysis::factory()->count(3)->create();
     }
 }

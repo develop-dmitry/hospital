@@ -129,9 +129,13 @@ class ClientKeyboard
 
         $dateRange = Tools::getTimeRange();
         $appointmentRepository = App::make(Appointment::class);
-        $dates = $appointmentRepository->getAppointmentsByDate($scheduleDate, $doctorId);
+        $appointments = $appointmentRepository->getAppointmentsByDate($scheduleDate, $doctorId);
 
-        $availableDates = array_diff($dateRange, array_column($dates, 'visit_time'));
+        foreach ($appointments as &$appointment) {
+            $appointment['visit_time'] = date('H:i', strtotime($appointment['visit_time']));
+        }
+
+        $availableDates = array_diff($dateRange, array_column($appointments, 'visit_time'));
         $callbackData = [
             'm' => 'm_tm',
         ];

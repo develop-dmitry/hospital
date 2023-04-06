@@ -91,32 +91,26 @@ class OnCallbackQueryHandler extends BaseHandler
                     case  'm_tm':
                         if (isset($callbackData['m_id'])) {
                             $data = $this->redis->hgetall($this->redisKey);
-
-                            $visitTime = $callbackData['m_id'];
-                            $visitDate  = $data['visit_date'];
-                            $doctorId = (int)$data['doctor_id'];
-                            $telegramId = (int)$data['telegram_id'];
                             $userRepository = App::make(UserRepository::class);
-                            $userId = (int)$userRepository->getIdByTelegramId($telegramId);
-                            $userName = $userRepository->getNameById($userId);
-                            $departmentId = (int)$data['department_id'] ?? null;
-                            $phone = $data['visitor_phone'] ?? null;
+                            $userId = (int)$userRepository->getIdByTelegramId((int)$data['telegram_id']);
+                            $doctorName = App::make(DoctorRepository::class)->getNameById((int)$data['doctor_id']);
 
-                            $appointment = new Appointment(
-                                $departmentId,
-                                $userId,
-                                $visitDate,
-                                $visitTime,
-                                $userName,
-                                $doctorId,
-                                $phone
-                            );
+                            $appointmentData = [
+                                'visit_time' => $callbackData['m_id'],
+                                'visit_date' => $data['visit_date'],
+                                'doctor_id' => (int) $data['doctor_id'],
+                                'user_id' => $userId,
+                                'visitor_name' => $userRepository->getNameById($userId),
+                                'department_id' => (int) $data['department_id'] ?? null,
+                                'visitor_phone' => $data['visitor_phone'] ?? null,
+                            ];
 
-                            $doctorName = App::make(DoctorRepository::class)->getNameById($doctorId);
+                            $appointment = new Appointment(...$appointmentData);
 
-                            $message = __('bot.error.register') ;
+                            $message = __('bot.error.register');
                             if (App::make(AppointmentRepository::class)->saveAppointment($appointment)) {
-                                $message = __('bot.register') . "Дата: $visitDate. Время: $visitTime. Специалист: $doctorName";
+                                $message =
+                                    __('bot.register') . "Дата: {$appointmentData['visit_date']}. Время: {$appointmentData['visit_time']}. Специалист: $doctorName";
                             }
                             $this->editMessage($message, [
                                 'disable_web_page_preview' => true,
@@ -125,6 +119,7 @@ class OnCallbackQueryHandler extends BaseHandler
                             $this->sendMessage(__('bot.schedule.link'));
                         }
                         break;
+
                     default:
                         break;
                 }

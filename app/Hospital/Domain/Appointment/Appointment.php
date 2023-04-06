@@ -7,12 +7,12 @@ namespace App\Hospital\Domain\Appointment;
 class Appointment
 {
 public function __construct(
-    protected int $department_id,
-    protected int $user_id,
-    protected string $visit_date,
     protected string $visit_time,
-    protected string $visitor_name,
+    protected string $visit_date,
     protected int $doctor_id,
+    protected int $user_id,
+    protected string $visitor_name,
+    protected int $department_id,
     protected ?string $visitor_phone,
 ) {}
 

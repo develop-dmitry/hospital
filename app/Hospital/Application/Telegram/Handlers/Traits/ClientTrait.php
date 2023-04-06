@@ -20,14 +20,14 @@ trait ClientTrait
     {
         $chatId = $bot->chatId();
         $this->redisKey = "user:$chatId";
-
-        $client = App::makeWith(ClientInterface::class, ['telegramId' => $chatId]);
         $this->redis = Redis::connection()->client();
-
         $this->redis->hmset($this->redisKey, [
                 'telegram_id' => $chatId
             ]
         );
+
+
+        $client = new Client($chatId);
 
         if (!$client->exist()) {
             try {
