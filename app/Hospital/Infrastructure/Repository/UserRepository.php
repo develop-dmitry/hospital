@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        protected UserBuilderInterface $userBuilder,
+        protected UserBuilderInterface $userBuilder
     ) {
     }
 
@@ -26,7 +26,7 @@ class UserRepository implements UserRepositoryInterface
         try {
             $user = UserModel::where('email', $email)->firstOrFail();
 
-            return $this->userBuilder->makeFromModel($user);
+            return $this->makeEntity($user);
         } catch (ModelNotFoundException) {
             throw new UserNotFoundException("User with email $email not found");
         }
@@ -37,7 +37,7 @@ class UserRepository implements UserRepositoryInterface
         try {
             $user = UserModel::where('auth_token', $token)->firstOrFail();
 
-            return $this->userBuilder->makeFromModel($user);
+            return $this->makeEntity($user);
         } catch (ModelNotFoundException) {
             throw new UserNotFoundException("User with token $token not found");
         }
@@ -97,5 +97,30 @@ class UserRepository implements UserRepositoryInterface
         } catch (ModelNotFoundException) {
             throw new UserNotFoundException("User with id $id not found");
         }
+    }
+
+    public function searchByName(string $name): array
+    {
+        $result = [];
+        $users = UserModel::where('name', 'like', "%$name%")->get();
+
+        foreach ($users as $user) {
+            $result[] = $this->makeEntity($user);
+        }
+
+        return $result;
+    }
+
+    protected function makeEntity(UserModel $model): User
+    {
+        return $this->userBuilder
+            ->setId($model->id ?: 0)
+            ->setEmail($model->email ?: '')
+            ->setPassword($model->password ?: '')
+            ->setLogin($model->login ?: '')
+            ->setAuthToken($model->auth_token ?: '')
+            ->setName($model->name ?: '')
+            ->setIsDoctor(!empty($model->doctors()->get()))
+            ->make();
     }
 }

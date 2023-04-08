@@ -45,6 +45,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['prefix' => 'v1'], function () use ($router) {
         $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('auth', ['uses' => 'UserController@authorization']);
+
+            $router->post('search', ['uses' => 'UserController@searchByName']);
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {

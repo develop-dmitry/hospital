@@ -132,6 +132,12 @@ $app->bind(\App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterfa
     );
 });
 
+$app->bind(\App\Hospital\Domain\User\Interface\UserClientInterface::class, function () use ($app) {
+    return new \App\Hospital\Application\User\UserClient(
+        $app->make(\App\Hospital\Domain\User\Interface\UserRepositoryInterface::class)
+    );
+});
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files

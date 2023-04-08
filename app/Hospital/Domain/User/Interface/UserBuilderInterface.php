@@ -24,6 +24,4 @@ interface UserBuilderInterface
     public function setIsDoctor(bool $isDoctor): static;
 
     public function make(): User;
-
-    public function makeFromModel(UserModel $model): User;
 }
