@@ -138,6 +138,20 @@ $app->bind(\App\Hospital\Domain\User\Interface\UserClientInterface::class, funct
     );
 });
 
+$app->bind(\App\Hospital\Domain\Client\Interface\ClientBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Client\ClientBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Client\Interface\ClientRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\ClientRepository(
+        $app->make(\App\Hospital\Domain\Client\Interface\ClientBuilderInterface::class)
+    );
+});
+
+$app->bind('telegram.bot', function () {
+    return new SergiX44\Nutgram\Nutgram(config('telegram.bot.token'));
+});
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -151,6 +165,7 @@ $app->bind(\App\Hospital\Domain\User\Interface\UserClientInterface::class, funct
 
 $app->configure('app');
 $app->configure('session');
+$app->configure('telegram');
 
 /*
 |--------------------------------------------------------------------------

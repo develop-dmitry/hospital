@@ -59,6 +59,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     });
 });
 
+$router->group(['prefix' => 'telegram'], function () use ($router) {
+    $router->post('hospital', ['uses' => 'TelegramController']);
+});
+
 $router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
 
 $router->get('/', ['as' => 'home', function () {
