@@ -24,10 +24,10 @@ class TelegramController extends Controller
         // $this->logger->info('token', [config('telegram.bot.token')]);
         $this->logger->info('telegram bot request', $request->toArray());
 
-        // $this->bot->setRunningMode(Webhook::class);
+        $this->bot->setRunningMode(Webhook::class);
 
         $this->bot->onCommand('/start', function () {
-            $this->bot->sendMessage('Здорова');
+            return $this->bot->sendMessage('test');
         });
 
         $this->bot->run();
