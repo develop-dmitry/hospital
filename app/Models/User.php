@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,10 +46,5 @@ class User extends Model
     public function analyses()
     {
         return $this->hasMany(Analysis::class);
-    }
-
-    public function getName()
-    {
-        return $this->attributes['name'];
     }
 }

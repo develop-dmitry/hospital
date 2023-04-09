@@ -7,122 +7,56 @@ namespace App\Hospital\Domain\Appointment;
 class Appointment
 {
 public function __construct(
-    protected string $visit_time,
-    protected string $visit_date,
-    protected int $doctor_id,
-    protected int $user_id,
-    protected string $visitor_name,
-    protected int $department_id,
-    protected ?string $visitor_phone,
+    protected ?int $id,
+    protected $visitTime,
+    protected $visitDate,
+    protected int $doctorId,
+    protected int $userId,
+    protected string $visitorName,
+    protected int $departmentId,
+    protected ?string $visitorPhone,
 ) {}
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getDepartmentId(): int
+    public function getId(): ?int
     {
-        return $this->department_id;
+        return $this->id;
+    }
+
+    public function setId(int $id): Appointment
+    {
+        $this->setId($id);
+        return $this;
+    }
+    public function getVisitTime()
+    {
+        return $this->visitTime;
     }
 
     /**
-     * @param int $department_id
+     * @param $visitTime
      * @return Appointment
      */
-    public function setDepartmentId(int $department_id): static
+    public function setVisitTime($visitTime): Appointment
     {
-        $this->department_id = $department_id;
-
+        $this->visitTime = $visitTime;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId(): int
+    public function getVisitDate()
     {
-        return $this->user_id;
-    }
-
-    public function setUserId(int $user_id): static
-    {
-        $this->user_id = $user_id;
-
-        return $this;
+        return $this->visitDate;
     }
 
     /**
-     * @return string
-     */
-    public function getVisitDate(): string
-    {
-        return $this->visit_date;
-    }
-
-    /**
-     * @param string $visit_date
+     * @param $visitDate
      * @return Appointment
      */
-    public function setVisitDate(string $visit_date): static
+    public function setVisitDate($visitDate): Appointment
     {
-        $this->visit_date = $visit_date;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVisitTime(): string
-    {
-        return $this->visit_time;
-    }
-
-    /**
-     * @param string $visit_time
-     * @return Appointment
-     */
-    public function setVisitTime(string $visit_time): static
-    {
-        $this->visit_time = $visit_time;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVisitorName(): string
-    {
-        return $this->visitor_name;
-    }
-
-    /**
-     * @param string $visitor_name
-     * @return Appointment
-     */
-    public function setVisitorName(string $visitor_name): static
-    {
-        $this->visitor_name = $visitor_name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVisitorPhone(): ?string
-    {
-        return $this->visitor_phone;
-    }
-
-    /**
-     * @param string $visitor_phone
-     * @return Appointment
-     */
-    public function setVisitorPhone(string $visitor_phone): static
-    {
-        $this->visitor_phone = $visitor_phone;
-
+        $this->visitDate = $visitDate;
         return $this;
     }
 
@@ -131,17 +65,89 @@ public function __construct(
      */
     public function getDoctorId(): int
     {
-        return $this->doctor_id;
+        return $this->doctorId;
     }
 
     /**
-     * @param int $doctor_id
+     * @param int $doctorId
      * @return Appointment
      */
-    public function setDoctorId(int $doctor_id): static
+    public function setDoctorId(int $doctorId): Appointment
     {
-        $this->doctor_id = $doctor_id;
-
+        $this->doctorId = $doctorId;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param int $userId
+     * @return Appointment
+     */
+    public function setUserId(int $userId): Appointment
+    {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorName(): string
+    {
+        return $this->visitorName;
+    }
+
+    /**
+     * @param string $visitorName
+     * @return Appointment
+     */
+    public function setVisitorName(string $visitorName): Appointment
+    {
+        $this->visitorName = $visitorName;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDepartmentId(): int
+    {
+        return $this->departmentId;
+    }
+
+    /**
+     * @param int $departmentId
+     * @return Appointment
+     */
+    public function setDepartmentId(int $departmentId): Appointment
+    {
+        $this->departmentId = $departmentId;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVisitorPhone(): ?string
+    {
+        return $this->visitorPhone;
+    }
+
+    /**
+     * @param string|null $visitorPhone
+     * @return Appointment
+     */
+    public function setVisitorPhone(?string $visitorPhone): Appointment
+    {
+        $this->visitorPhone = $visitorPhone;
+        return $this;
+    }
+
 }

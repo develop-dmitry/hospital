@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\User;
 
-use App\Hospital\Application\User\UserBuilder;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\User;
+use App\Hospital\Domain\User\UserBuilder;
 use App\Hospital\Infrastructure\Repository\UserRepository;
-use Tests\TestCase;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class UserRepositoryTest extends TestCase
 {
@@ -63,5 +63,34 @@ class UserRepositoryTest extends TestCase
 
         $this->expectException(UserNotFoundException::class);
         $this->userRepository->findByEmail($this->user->getEmail());
+    }
+
+    public function testUpdateUserSuccess(): void
+    {
+        $user = clone $this->user;
+        $userId = $this->userRepository->saveUser($user);
+
+        $user
+            ->setId($userId)
+            ->setName('test123456');
+        $this->userRepository->saveUser($user);
+
+        $user = $this->userRepository->findByEmail($user->getEmail());
+        $this->assertEquals('test123456', $user->getName());
+    }
+
+    public function testFindById(): void
+    {
+        $user = clone $this->user;
+        $userId = $this->userRepository->saveUser($user);
+
+        $this->expectNotToPerformAssertions();
+        $this->userRepository->findById($userId);
+    }
+
+    public function testFindByIdFail(): void
+    {
+        $this->expectException(UserNotFoundException::class);
+        $this->userRepository->findById(999999);
     }
 }

@@ -46,5 +46,10 @@ export default defineComponent({
     font-weight: 700;
     cursor: pointer;
     padding: 0 $margin-sm;
+
+    &_disabled {
+        pointer-events: none;
+        opacity: .8;
+    }
 }
 </style>

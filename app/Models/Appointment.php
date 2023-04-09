@@ -38,12 +38,4 @@ class Appointment extends Model
     {
         return $this->belongsTo(Department::class);
     }
-
-    public static function getAppointmentsByDate($date, $doctorId)
-    {
-        return self::whereDate('visit_date', $date)
-            ->where('doctor_id', $doctorId)
-            ->get()
-            ->toArray();
-    }
 }

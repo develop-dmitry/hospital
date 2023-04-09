@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\User;
 
-use App\Hospital\Application\User\UserAuthorization;
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
+use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Hospital\Domain\User\User;
-use App\Hospital\Domain\User\UserBuilderInterface;
+use App\Hospital\Domain\User\UserAuthorization;
 use App\Hospital\Infrastructure\Repository\UserRepository;
+use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -19,21 +20,9 @@ class UserAuthorizationTest extends TestCase
 {
     protected UserBuilderInterface $userBuilder;
 
+    protected SessionManager $sessionManager;
+
     protected User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->userBuilder = $this->app->make(UserBuilderInterface::class);
-
-        $this->user =  $this->userBuilder
-            ->setEmail('test_user@email.com')
-            ->setLogin('test.user')
-            ->setPassword('12345678')
-            ->setName('test')
-            ->make();
-    }
 
     public function testAuthorizationSuccess(): void
     {
@@ -43,7 +32,7 @@ class UserAuthorizationTest extends TestCase
             ->getMock();
         $userRepository->method('findByEmail')->willReturn($user);
 
-        $userAuthorization = new UserAuthorization($userRepository);
+        $userAuthorization = new UserAuthorization($userRepository, $this->sessionManager);
         $authorizationRequest = new AuthorizationRequest('test_user@email.com', '12345678');
 
         $this->expectNotToPerformAssertions();
@@ -58,7 +47,7 @@ class UserAuthorizationTest extends TestCase
             ->getMock();
         $userRepository->method('findByEmail')->willReturn($user);
 
-        $userAuthorization = new UserAuthorization($userRepository);
+        $userAuthorization = new UserAuthorization($userRepository, $this->sessionManager);
         $authorizationRequest = new AuthorizationRequest('test_user@email.com', '1234545678');
 
         $this->expectException(InvalidUserPasswordException::class);
@@ -72,7 +61,7 @@ class UserAuthorizationTest extends TestCase
             ->getMock();
         $userRepository->method('findByEmail')->willThrowException(new UserNotFoundException());
 
-        $userAuthorization = new UserAuthorization($userRepository);
+        $userAuthorization = new UserAuthorization($userRepository, $this->sessionManager);
         $authorizationRequest = new AuthorizationRequest('test_ser@email.com', '1234545678');
 
         $this->expectException(UserNotFoundException::class);
@@ -89,10 +78,26 @@ class UserAuthorizationTest extends TestCase
         $userRepository->method('findByEmail')->willReturn($user);
         $userRepository->method('saveUser')->willThrowException(new UserSaveFailedException());
 
-        $userAuthorization = new UserAuthorization($userRepository);
+        $userAuthorization = new UserAuthorization($userRepository, $this->sessionManager);
         $authorizationRequest = new AuthorizationRequest('test_user@email.com', '12345678');
 
         $this->expectException(UserSaveFailedException::class);
         $userAuthorization->auth($authorizationRequest);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->sessionManager = $this->app->get(SessionManager::class);
+
+        $this->userBuilder = $this->app->make(UserBuilderInterface::class);
+
+        $this->user =  $this->userBuilder
+            ->setEmail('test_user@email.com')
+            ->setLogin('test.user')
+            ->setPassword('12345678')
+            ->setName('test')
+            ->make();
     }
 }

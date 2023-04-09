@@ -1,0 +1,35 @@
+.input {
+    display: block;
+
+    &__label {
+        font-size: 14px;
+        display: block;
+        padding-bottom: 5px;
+        cursor: pointer;
+    }
+
+    &__item {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        padding: $margin-sm;
+        font-size: $text-sm;
+        border-radius: $border-sm;
+        box-shadow: none;
+        border: 1px solid $brand;
+        color: $text;
+        background: $background;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__error {
+        font-size: $text-xs;
+        display: block;
+        margin-top: $margin-xs;
+        color: $error;
+        line-height: 1.3;
+    }
+}

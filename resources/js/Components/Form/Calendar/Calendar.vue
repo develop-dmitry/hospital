@@ -72,8 +72,8 @@ export default defineComponent({
             type: Array as PropType<Array<Date>>,
             default: []
         },
-        closeDates: {
-            type: Array as PropType<Array<{from: Date, before: Date}>>,
+        disabledDates: {
+            type: Array as PropType<Array<Date>>,
             default: []
         },
         maxMonthOffset: Number,
@@ -185,11 +185,9 @@ export default defineComponent({
                 return true;
             }
 
-            const inCloseDates = this.closeDates.filter((date) => {
-                return DateCompare.compareDate(date.from, cell.date) && DateCompare.compareDate(cell.date, date.before);
-            }).length > 0;
+            const inDisabledDates = this.disabledDates.filter(date => DateCompare.equalDate(date, cell.date)).length > 0;
 
-            if (inCloseDates) {
+            if (inDisabledDates) {
                 return true;
             }
 

@@ -5,6 +5,7 @@ ARG WWWGROUP
 ARG WWWUSER
 
 COPY ./conf.d/php.ini $PHP_INI_DIR/conf.d/php.ini
+COPY ./conf.d/docker-php-ext-xdebug.ini $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini
 
 RUN apt-get update \
     && apt-get install -y \

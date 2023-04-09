@@ -4,48 +4,79 @@ declare(strict_types=1);
 
 namespace App\Hospital\Infrastructure\Repository;
 
-use App\Models\DoctorSchedule;
-class DoctorScheduleRepository
+use App\Hospital\Domain\DoctorSchedule\DoctorScheduleBuilder;
+use App\Hospital\Domain\DoctorSchedule\Exception\ChooseDateFailedException;
+use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface;
+use App\Hospital\Domain\DoctorSchedule\DoctorSchedule;
+use App\Models\DoctorSchedule as DoctorScheduleModel;
+use DateTime;
+use Illuminate\Support\Facades\DB;
+
+class DoctorScheduleRepository implements DoctorScheduleRepositoryInterface
 {
-    public function getById(int $id): ?DoctorSchedule
-    {
-        return DoctorSchedule::find($id)->toArray();
+    public function __construct(
+        protected DoctorScheduleBuilder $doctorScheduleBuilder
+    ) {
     }
 
-    public function getAll(): \Illuminate\Database\Eloquent\Collection
+    public function getBusyDays(int $departmentId, DateTime $from, DateTime $before): array
     {
-        return DoctorSchedule::all();
-    }
+        $busyDays = DoctorScheduleModel::whereBetween('date', [$from, $before])
+            ->whereHas('doctor', function ($builder) use ($departmentId) {
+                $builder->where('department_id', $departmentId);
+            })
+            ->get();
 
-    public function create(array $data): DoctorSchedule
-    {
-        return DoctorSchedule::create($data);
-    }
+        $result = [];
 
-    public function update(int $id, array $data): bool
-    {
-        $doctorSchedule = DoctorSchedule::find($id);
-
-        if (!$doctorSchedule) {
-            return false;
+        foreach ($busyDays as $day) {
+            $result[] = $this->makeEntity($day);
         }
 
-        return $doctorSchedule->update($data);
+        return $result;
     }
 
-    public function delete(int $id): bool
+    public function chooseDates(array $schedules): void
     {
-        $doctorSchedule = DoctorSchedule::find($id);
+        DB::beginTransaction();
 
-        if (!$doctorSchedule) {
-            return false;
+        foreach ($schedules as $schedule) {
+            $success = DoctorScheduleModel::create([
+                'doctor_id' => $schedule->getDoctorId(),
+                'date' => $schedule->getDate()
+            ]);
+
+            if (!$success) {
+                DB::rollBack();
+
+                throw new ChooseDateFailedException('Failed to choose the dates of work schedule');
+            }
         }
 
-        return $doctorSchedule->delete();
+        DB::commit();
     }
 
-    public function getByDoctorId(int $doctorId): array
+    public function getDoctorSchedule(int $doctorId): array
     {
-        return DoctorSchedule::where('doctor_id', $doctorId)->get()->toArray();
+        $doctorSchedules = DoctorScheduleModel::where('doctor_id', $doctorId)
+            ->orderBy('date')
+            ->get();
+
+        $result = [];
+
+        foreach ($doctorSchedules as $doctorSchedule) {
+            $result[] = $this->makeEntity($doctorSchedule);
+        }
+
+        return $result;
+    }
+
+    protected function makeEntity(DoctorScheduleModel $doctorScheduleModel): DoctorSchedule
+    {
+        return $this->doctorScheduleBuilder
+            ->setId($doctorScheduleModel->id)
+            ->setDoctorId($doctorScheduleModel->doctor_id)
+            ->setDate($doctorScheduleModel->date)
+            ->make();
     }
 }

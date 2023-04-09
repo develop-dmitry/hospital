@@ -1,51 +1,29 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Hospital\Infrastructure\Repository;
 
+use App\Hospital\Domain\Appointment\Appointment;
+use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Appointment\Exception\AppointmentSaveFailedException;
-use App\Models\Appointment;
+use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
+use App\Models\Appointment as AppointmentModel;
+use App\Hospital\Domain\Appointment\AppointmentBuilder;
 
-class AppointmentRepository
+class AppointmentRepository implements AppointmentRepositoryInterface
 {
-    public function all()
+    public function __construct(
+        protected AppointmentBuilder $appointmentBuilder
+    ) {}
+
+
+    public function saveAppointment(Appointment $appointment): int
     {
-        return Appointment::all();
-    }
+        $appointmentModel = AppointmentModel::find($appointment->getId());
 
-    public function getByDoctorId($doctorId)
-    {
-        return Appointment::where('doctor_id', $doctorId)->get();
-    }
-
-    public function create($data)
-    {
-        return Appointment::create($data);
-    }
-
-    public function update($id, $data)
-    {
-        $appointment = Appointment::findOrFail($id);
-        $appointment->update($data);
-
-        return $appointment;
-    }
-
-    public function delete($id)
-    {
-        $appointment = Appointment::findOrFail($id);
-        $appointment->delete();
-
-        return $appointment;
-    }
-
-    /**
-     * @throws AppointmentSaveFailedException
-     */
-    public function saveAppointment(\App\Hospital\Domain\Appointment\Appointment $appointment): int
-    {
-        $appointmentModel = new Appointment;
+        if (!$appointmentModel) {
+            $appointmentModel = new AppointmentModel();
+        }
 
         $appointmentModel->fill([
             'department_id' => $appointment->getDepartmentId(),
@@ -58,9 +36,42 @@ class AppointmentRepository
         ]);
 
         if (!$appointmentModel->save()) {
-            throw new AppointmentSaveFailedException("Failed to save user with id {$appointmentModel->id}");
+            throw new AppointmentSaveFailedException(
+                "Failed to save appointment with id {$appointmentModel->id}"
+            );
         }
 
         return $appointmentModel->id;
+    }
+
+    protected function makeEntity(AppointmentModel $appointmentModel): Appointment
+    {
+        return $this->appointmentBuilder
+            ->setId($appointmentModel->id)
+            ->setDepartmentId($appointmentModel->department_id)
+            ->setUserId($appointmentModel->user_id)
+            ->setDoctorId($appointmentModel->doctor_id)
+            ->setVisitDate($appointmentModel->visit_date)
+            ->setVisitTime($appointmentModel->visit_time)
+            ->setVisitorName($appointmentModel->visitor_name)
+            ->setVisitorPhone($appointmentModel->visitor_phone)
+            ->make();
+    }
+
+    public function getAppointmentsByDate($date, $doctorId): array
+    {
+        $appointments = AppointmentModel::whereDate('visit_date', $date)
+            ->where('doctor_id', $doctorId)
+            ->get();
+
+        if (!$appointments) {
+            throw new AppointmentNotFoundException(
+                "Appointments with doctor_id {$doctorId} and date {$date} not found"
+            );
+        }
+
+        return $appointments->map(function(AppointmentModel $appointmentModel) {
+            return $this->makeEntity($appointmentModel);
+        })->toArray();
     }
 }

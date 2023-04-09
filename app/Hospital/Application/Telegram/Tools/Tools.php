@@ -6,11 +6,10 @@ namespace App\Hospital\Application\Telegram\Tools;
 
 use DateTime;
 use DateInterval;
-use Carbon\Carbon;
 
 class Tools
 {
-    public static function getTimeRange()
+    public static function getTimeRange(): array
     {
         $startDate = new DateTime('09:00');
         $endDate = new DateTime('17:30');
@@ -25,9 +24,9 @@ class Tools
         return $dateRange;
     }
 
-    public static function formatDate(string $date)
+    public static function formatDate(string $date): string
     {
-        $date = Carbon::createFromFormat('d.m.Y', $date);
-        return $date->format('Y-m-d');
+        $formattedDate = DateTime::createFromFormat('d.m.Y', $date);
+        return $formattedDate->format('Y-m-d');
     }
 }

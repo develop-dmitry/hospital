@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Telegram\Handlers;
 
-use App\Hospital\Application\Telegram\Handlers\Interfaces\HandlerInterface;
 use App\Hospital\Application\Telegram\Handlers\Traits\ClientTrait;
+use App\Hospital\Domain\Handler\HandlerInterface;
 use SergiX44\Nutgram\Nutgram;
 
 abstract class BaseHandler implements HandlerInterface

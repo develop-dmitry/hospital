@@ -6,17 +6,24 @@ namespace App\Http\Controllers;
 
 use App\Hospital\Application\Telegram\Bot\AdminBot;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Hospital\Application\Telegram\Handlers\RegisterHandlers;
 use App\Hospital\Application\Telegram\Handlers\OnCommandHandler;
 use App\Hospital\Application\Telegram\Handlers\OnCallbackQueryHandler;
 use App\Hospital\Application\Telegram\Handlers\OnMessageHandler;
+use Psr\Log\LoggerInterface;
 
 class TelegramBotController extends Controller
 {
+    protected LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function __invoke(Request $request,  AdminBot $bot)
     {
-        Log::info('req', [$request->toArray()]);
+        $this->logger->info('Request', $request->toArray());
 
         try {
             RegisterHandlers::init($bot)
@@ -26,7 +33,7 @@ class TelegramBotController extends Controller
                     OnCallbackQueryHandler::class
                 )->initiate();
         } catch (\Exception $exception) {
-            Log::error('error', [$exception->getMessage()]);
+            $this->logger->error($exception->getMessage());
         }
 
         return \response('success');

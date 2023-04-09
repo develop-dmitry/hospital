@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Hospital\Application\Telegram\Handlers\Traits;
 
 use App\Hospital\Application\Telegram\Client\Client;
-use App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redis;
 use SergiX44\Nutgram\Nutgram;
 

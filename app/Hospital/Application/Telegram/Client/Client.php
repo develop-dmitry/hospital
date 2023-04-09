@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Telegram\Client;
 
-use App\Hospital\Application\Telegram\Client\Interfaces\ClientInterface;
+use App\Hospital\Domain\Client\Interface\ClientInterface;
 
 class Client implements ClientInterface
 {

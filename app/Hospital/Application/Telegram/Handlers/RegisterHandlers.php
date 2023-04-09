@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Telegram\Handlers;
 
-use App\Hospital\Application\Telegram\Handlers\Interfaces\HandlerInterface;
+use App\Hospital\Domain\Handler\HandlerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SergiX44\Nutgram\Nutgram;

@@ -15,8 +15,6 @@
 
 use Laravel\Lumen\Routing\Router;
 
-$router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
-
 $router->group(['prefix' => 'profile'], function () use ($router) {
     $router->get('/', ['as' => 'profile', 'middleware' => ['auth'], function () {
         return view('profile.profile');
@@ -52,5 +50,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('auth', ['uses' => 'UserController@authorization']);
         });
+
+        $router->group(['prefix' => 'schedule'], function () use ($router) {
+            $router->get('/', ['uses' => 'DoctorScheduleController@getDoctorSchedule']);
+
+            $router->get('busy', ['uses' => 'DoctorScheduleController@getBusyDates']);
+
+            $router->post('choose', ['uses' => 'DoctorScheduleController@chooseDates']);
+        });
     });
 });
+
+$router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
+
+$router->get('/', ['as' => 'home', function () {
+    return view('home');
+}]);
