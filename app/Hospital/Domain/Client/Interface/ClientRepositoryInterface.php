@@ -6,13 +6,21 @@ namespace App\Hospital\Domain\Client\Interface;
 
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Client\Exception\ClientNotFoundException;
+use App\Hospital\Domain\Client\Exception\FailedClientCreateException;
 
 interface ClientRepositoryInterface
 {
     /**
-     * @param string $telegramToken
+     * @param int $telegramId
      * @return Client
      * @throws ClientNotFoundException
      */
-    public function getClientByTelegramToken(string $telegramToken): Client;
+    public function getClientByTelegramId(int $telegramId): Client;
+
+    /**
+     * @param Client $client
+     * @return int
+     * @throws FailedClientCreateException
+     */
+    public function createClient(Client $client): int;
 }

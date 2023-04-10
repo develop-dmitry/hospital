@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\Handler\Exception;
+namespace App\Hospital\Domain\Messanger\Exception;
 
 use Exception;
 

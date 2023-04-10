@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->string('telegram_token')->nullable();
+            $table->integer('telegram_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

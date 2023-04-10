@@ -9,7 +9,7 @@ class Client
     public function __construct(
         protected ?int $id,
         protected ?int $userId,
-        protected ?string $telegramToken
+        protected ?int $telegramId
     ) {
     }
 
@@ -50,20 +50,20 @@ class Client
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getTelegramToken(): ?string
+    public function getTelegramId(): ?int
     {
-        return $this->telegramToken;
+        return $this->telegramId;
     }
 
     /**
-     * @param string|null $telegramToken
+     * @param int|null $telegramId
      * @return Client
      */
-    public function setTelegramToken(?string $telegramToken): Client
+    public function setTelegramId(?int $telegramId): Client
     {
-        $this->telegramToken = $telegramToken;
+        $this->telegramId = $telegramId;
         return $this;
     }
 }

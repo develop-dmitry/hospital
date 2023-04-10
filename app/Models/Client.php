@@ -12,7 +12,7 @@ class Client extends Model
 
     protected $fillable = [
         'user_id',
-        'telegram_token'
+        'telegram_id'
     ];
 
     public function user(): HasOne

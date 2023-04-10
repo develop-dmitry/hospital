@@ -7,9 +7,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
-class TelegramWebhook extends Command
+class TelegramSetWebhook extends Command
 {
-    protected $signature = 'telegram:webhooks {host}';
+    protected $signature = 'telegram:webhooks:set {host}';
 
     protected $description = 'Webhook registration';
 
@@ -27,7 +27,7 @@ class TelegramWebhook extends Command
 
     private function setWebhook(string $token): string
     {
-        $url = $this->getHost() . '/telegram/hospital';
+        $url = $this->getHost() . '/tg/Bot';
 
         return Http::get("https://api.telegram.org/bot$token/setWebhook?url=$url")->body();
     }

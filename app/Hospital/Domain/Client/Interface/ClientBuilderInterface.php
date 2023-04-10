@@ -12,7 +12,7 @@ interface ClientBuilderInterface
 
     public function setUserId(?int $userId): static;
 
-    public function setTelegramToken(?string $telegramToken): static;
+    public function setTelegramId(?int $telegramId): static;
 
     public function make(): Client;
 }

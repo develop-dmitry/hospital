@@ -12,7 +12,7 @@ class ClientBuilder implements ClientBuilderInterface
 
     protected ?int $userId = null;
 
-    protected ?string $telegramToken = null;
+    protected ?int $telegramId = null;
 
     public function setId(?int $id): static
     {
@@ -26,9 +26,9 @@ class ClientBuilder implements ClientBuilderInterface
         return $this;
     }
 
-    public function setTelegramToken(?string $telegramToken): static
+    public function setTelegramId(?int $telegramId): static
     {
-        $this->telegramToken = $telegramToken;
+        $this->telegramId = $telegramId;
         return $this;
     }
 
@@ -37,7 +37,7 @@ class ClientBuilder implements ClientBuilderInterface
         $client = new Client(
             $this->id,
             $this->userId,
-            $this->telegramToken
+            $this->telegramId
         );
 
         $this->reset();
@@ -49,6 +49,6 @@ class ClientBuilder implements ClientBuilderInterface
     {
         $this->id = null;
         $this->userId = null;
-        $this->telegramToken = null;
+        $this->telegramId = null;
     }
 }
