@@ -82,19 +82,6 @@ class UserBuilder implements UserBuilderInterface
         return $user;
     }
 
-    public function makeFromModel(UserModel $model): User
-    {
-        $this->setId($model->id ?: 0)
-            ->setEmail($model->email ?: '')
-            ->setPassword($model->password ?: '')
-            ->setLogin($model->login ?: '')
-            ->setAuthToken($model->auth_token ?: '')
-            ->setName($model->name ?: '')
-            ->setIsDoctor(!empty($model->doctors()->get()));
-
-        return $this->make();
-    }
-
     protected function reset(): void
     {
         $this->id = 0;

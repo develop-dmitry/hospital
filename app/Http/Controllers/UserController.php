@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Hospital\Application\User\DTO\SearchByNameRequest;
 use App\Hospital\Domain\User\DTO\AuthorizationRequest;
 use App\Hospital\Domain\User\Exception\InvalidUserPasswordException;
 use App\Hospital\Domain\User\Exception\UserNotFoundException;
 use App\Hospital\Domain\User\Exception\UserSaveFailedException;
+use App\Hospital\Domain\User\Interface\UserAuthorizationInterface;
+use App\Hospital\Domain\User\Interface\UserClientInterface;
 use App\Hospital\Domain\User\UserAuthorization;
 use App\Hospital\Infrastructure\Repository\UserRepository;
 use Illuminate\Http\JsonResponse;
@@ -21,8 +24,8 @@ use Laravel\Lumen\Http\Redirector;
 class UserController extends Controller
 {
     public function __construct(
-        protected UserAuthorization $userAuthorization,
-        protected UserRepository $userRepository
+        protected UserAuthorizationInterface $userAuthorization,
+        protected UserClientInterface $userClient
     ) {
     }
 
@@ -60,5 +63,20 @@ class UserController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function searchByName(Request $request): JsonResponse
+    {
+        try {
+            $this->validate($request, [
+                'name' => 'required'
+            ]);
+
+            $response = $this->userClient->searchByName(new SearchByNameRequest($request->get('name')));
+
+            return response()->json(['success' => true, 'users' => $response->getUsers()]);
+        } catch (ValidationException) {
+            return response()->json(['success' => false, 'message' => 'Некорректный запрос']);
+        }
     }
 }

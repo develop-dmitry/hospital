@@ -45,6 +45,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['prefix' => 'v1'], function () use ($router) {
         $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('auth', ['uses' => 'UserController@authorization']);
+
+            $router->post('search', ['uses' => 'UserController@searchByName']);
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {
@@ -55,6 +57,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('choose', ['uses' => 'DoctorScheduleController@chooseDates']);
         });
     });
+});
+
+$router->group(['prefix' => 'tg'], function () use ($router) {
+    $router->post('/Bot', ['uses' => 'TelegramController']);
 });
 
 $router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
