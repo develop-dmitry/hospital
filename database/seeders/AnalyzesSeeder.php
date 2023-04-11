@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,6 +11,6 @@ class AnalyzesSeeder extends Seeder
 {
     public function run()
     {
-        Analysis::factory()->count(10)->create();
+        Analysis::factory()->count(3)->create();
     }
 }

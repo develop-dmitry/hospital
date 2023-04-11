@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,6 +11,6 @@ class DepartmentSeeder extends Seeder
 {
     public function run()
     {
-        Department::factory()->count(5)->create();
+        Department::factory()->count(1)->create();
     }
 }

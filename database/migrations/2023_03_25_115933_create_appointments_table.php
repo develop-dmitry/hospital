@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('user_id');
-            $table->timestamp('visit_date');
+            $table->date('visit_date');
+            $table->time('visit_time')->nullable();
             $table->string('visitor_name');
-            $table->string('visitor_phone');
+            $table->string('visitor_phone')->nullable();
             $table->unsignedBigInteger('doctor_id');
             $table->timestamps();
 

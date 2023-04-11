@@ -14,12 +14,14 @@ class Appointment extends Model
         'user_id',
         'doctor_id',
         'visit_date',
+        'visit_time',
         'visitor_name',
         'visitor_phone',
     ];
 
     protected $casts = [
         'visit_date' => 'datetime',
+        'visit_time' => 'datetime'
     ];
 
     public function user()

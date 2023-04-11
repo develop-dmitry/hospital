@@ -90,4 +90,28 @@ class DoctorRepository implements DoctorRepositoryInterface
             ->setDepartmentId($doctor->department_id)
             ->make();
     }
+
+    public function getById(int $id): Doctor
+    {
+        $doctorModel = DoctorModel::find($id);
+
+        if (!$doctorModel) {
+            throw new DoctorNotFoundException("Doctor with id = $id not found");
+        }
+
+        return $this->makeEntity($doctorModel);
+    }
+
+    public function getByDepartmentId(int $departmentId): array
+    {
+        try {
+            $doctorModels = DoctorModel::where('department_id', $departmentId)->get();
+
+            return $doctorModels->map(function($doctorModel) {
+                return $this->makeEntity($doctorModel);
+            })->toArray();
+        } catch (ModelNotFoundException) {
+            throw new DoctorNotFoundException("Doctor with departmentId = $departmentId not found");
+        }
+    }
 }

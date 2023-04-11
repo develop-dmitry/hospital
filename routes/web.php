@@ -41,6 +41,10 @@ $router->group(['prefix' => 'profile'], function () use ($router) {
     });
 });
 
+$router->group(['prefix' => 'tg'], function () use ($router) {
+    $router->post('/Bot', ['as' => 'telegram.bot', 'uses' => 'TelegramBotController']);
+});
+
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['prefix' => 'v1'], function () use ($router) {
         $router->group(['prefix' => 'user'], function () use ($router) {

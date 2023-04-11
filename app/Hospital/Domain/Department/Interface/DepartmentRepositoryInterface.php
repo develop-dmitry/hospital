@@ -23,4 +23,9 @@ interface DepartmentRepositoryInterface
      * @throws DepartmentNotFoundException
      */
     public function findDepartmentById(int $departmentId): Department;
+
+    /**
+     * @return array
+     */
+    public function getAll(): array;
 }

@@ -194,6 +194,8 @@ $app->configure('app');
 $app->configure('session');
 $app->configure('telegram');
 
+$app->setLocale(config('app.locale'));
+
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -230,6 +232,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(\Illuminate\Redis\RedisServiceProvider::class);
 $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+$app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

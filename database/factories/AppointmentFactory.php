@@ -21,6 +21,7 @@ class AppointmentFactory extends Factory
             'visit_date' => $this->faker->dateTimeBetween('now', '+1 month'),
             'visitor_name' => $this->faker->name,
             'visitor_phone' => $this->faker->phoneNumber,
+            'visit_time' => $this->faker->time
         ];
     }
 }
