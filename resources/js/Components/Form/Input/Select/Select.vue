@@ -8,7 +8,7 @@ label.input.input_select(:class="componentClass")
         @click="toggleDropdown"
     )
     .dropdown(v-if="isOpenedDropdown")
-        input.input__item.dropdown__input(placeholder="Поиск...")
+        input.input__item.dropdown__input(placeholder="Поиск..." v-model="searchQuery")
         ul.dropdown__list
             li.dropdown__item(@click="select(''); closeDropdown()") {{ placeholder }}
             li.dropdown__item(
@@ -34,6 +34,10 @@ export default defineComponent({
         Input
     ],
 
+    emits: [
+        'search'
+    ],
+
     data() {
         return {
             componentValue: '' as string|number,
@@ -42,7 +46,8 @@ export default defineComponent({
                 2: 'Дмитрий',
                 3: 'Иван'
             } as {[index: string|number]: string},
-            isOpenedDropdown: false
+            isOpenedDropdown: false,
+            searchQuery: ''
         }
     },
 
@@ -55,6 +60,10 @@ export default defineComponent({
     methods: {
         select(key: string|number) {
             this.componentValue = key;
+        },
+
+        search(value: string) {
+            this.$emit('search', value);
         },
 
         toggleDropdown() {
@@ -71,6 +80,12 @@ export default defineComponent({
 
         closeDropdown() {
             this.isOpenedDropdown = false;
+        }
+    },
+
+    watch: {
+        searchQuery(value) {
+            this.search(value);
         }
     }
 });

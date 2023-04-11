@@ -54,4 +54,10 @@ interface UserRepositoryInterface
      * @throws UserNotFoundException
      */
     public function changePassword(int $id, string $password): void;
+
+    /**
+     * @param string $name
+     * @return User[]
+     */
+    public function searchByName(string $name): array;
 }

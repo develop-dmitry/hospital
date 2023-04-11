@@ -132,12 +132,51 @@ $app->bind(\App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterfa
     );
 });
 
-$app->bind(\App\Hospital\Domain\Client\Interface\ClientInterface::class, function () {
-    return new App\Hospital\Application\Telegram\Client\Client();
+$app->bind(\App\Hospital\Domain\User\Interface\UserClientInterface::class, function () use ($app) {
+    return new \App\Hospital\Application\User\UserClient(
+        $app->make(\App\Hospital\Domain\User\Interface\UserRepositoryInterface::class)
+    );
 });
 
-$app->bind(\SergiX44\Nutgram\Nutgram::class, function () {
-    return new \App\Hospital\Application\Telegram\Bot\AdminBot();
+$app->bind(\App\Hospital\Domain\Client\Interface\ClientBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Client\ClientBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Client\Interface\ClientRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\ClientRepository(
+        $app->make(\App\Hospital\Domain\Client\Interface\ClientBuilderInterface::class)
+    );
+});
+
+$app->bind('telegram.bot', function () {
+    return new SergiX44\Nutgram\Nutgram(config('telegram.bot.token'));
+});
+
+$app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerInterface::class, function () {
+    return new \App\Hospital\Domain\Messanger\Messanger();
+});
+
+$app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Messanger\TelegramMessangerManager(
+        $app->make(\App\Hospital\Domain\Client\Interface\ClientRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Client\Interface\ClientBuilderInterface::class),
+        $app->make(\App\Hospital\Domain\Messanger\Interface\MessangerInterface::class),
+        $app->make('telegram.bot'),
+        $app->make(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface::class),
+        $app->make(\Psr\Log\LoggerInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Messanger\Keyboard\KeyboardBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Messanger\KeyboardButton\KeyboardButtonBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Messanger\KeyboardButton\KeyboardButtonCallbackBuilder();
 });
 
 /*
@@ -154,6 +193,7 @@ $app->bind(\SergiX44\Nutgram\Nutgram::class, function () {
 $app->configure('app');
 $app->configure('session');
 $app->configure('telegram');
+
 $app->setLocale(config('app.locale'));
 
 /*
