@@ -32,7 +32,12 @@ class MenuMessangerHandler implements MessangerHandlerInterface
             ->setText('Запустить ракету')
             ->makeButton();
 
+        $appointmentBtn = $this->keyboardButtonBuilder
+            ->setText('Мои записи')
+            ->makeButton();
+
         $keyboard->addRow($button);
+        $keyboard->addRow($appointmentBtn);
 
         $messanger->setMessage('Меню');
         $messanger->setMessangerKeyboard($keyboard, KeyboardType::Reply);

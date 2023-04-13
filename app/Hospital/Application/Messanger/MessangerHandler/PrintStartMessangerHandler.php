@@ -45,14 +45,6 @@ class PrintStartMessangerHandler implements MessangerHandlerInterface
 
         $keyboard->addRow($button);
 
-        /*$keyboard = $this->keyboardBuilder->makeReplyKeyboard();
-
-        $button = $this->keyboardButtonBuilder
-            ->setText('Этот бот бля самый лучший бот бля на земле')
-            ->makeButton();
-
-        $keyboard->addRow($button);*/
-
         $messanger->setMessage('Привет! Давай запустим ракету?');
         $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
     }

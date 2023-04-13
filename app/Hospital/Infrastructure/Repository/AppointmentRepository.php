@@ -74,4 +74,53 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             return $this->makeEntity($appointmentModel);
         })->toArray();
     }
+
+    public function getByUserId(int $userId): array
+    {
+        $appointments = AppointmentModel::where('user_id', $userId)
+            ->where('canceled', false)
+            ->get();
+
+        if (!$appointments) {
+            throw new AppointmentNotFoundException(
+                "Appointments with user_id {$userId} not found"
+            );
+        }
+
+        return $appointments->map(function(AppointmentModel $appointmentModel) {
+            return $this->makeEntity($appointmentModel);
+        })->toArray();
+    }
+
+    public function cancelAppointment(int $appointmentId): void
+    {
+        $appointmentModel = AppointmentModel::find($appointmentId);
+
+        if (!$appointmentModel) {
+            throw new AppointmentNotFoundException(
+                "Appointment with id {$appointmentId} not found"
+            );
+        }
+
+        $appointmentModel->canceled = true;
+
+        if (!$appointmentModel->save()) {
+            throw new AppointmentSaveFailedException(
+                "Failed to cancel appointment with id {$appointmentId}"
+            );
+        }
+    }
+
+    public function getById(int $appointmentId): Appointment
+    {
+        $appointmentModel = AppointmentModel::find($appointmentId);
+
+        if (!$appointmentModel) {
+            throw new AppointmentNotFoundException(
+                "Appointment with id {$appointmentId} not found"
+            );
+        }
+
+        return $this->makeEntity($appointmentModel);
+    }
 }

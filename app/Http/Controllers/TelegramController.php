@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Hospital\Application\Messanger\MessangerHandler\AppointmentMessangerHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\CancelAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\MenuMessangerHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\MyAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\PrintStartMessangerHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\ReentryAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\StartRockerMessangerHandler;
-use App\Hospital\Application\Messanger\MessangerHandler\TestHandler;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerContainerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface;
 use App\Hospital\Domain\Messanger\MessangerHandlerContainer;
+use App\Hospital\Infrastructure\Repository\AppointmentRepository;
+use App\Hospital\Infrastructure\Repository\DoctorRepository;
 use Illuminate\Http\Request;
 use Psr\Log\LoggerInterface;
 
@@ -24,7 +29,9 @@ class TelegramController extends Controller
         private readonly MessangerManagerInterface              $handlerManager,
         private readonly KeyboardBuilderInterface               $messangerKeyboardBuilder,
         private readonly KeyboardButtonBuilderInterface         $messangerKeyboardButtonBuilder,
-        private readonly KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackBuilder
+        private readonly KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackBuilder,
+        private readonly AppointmentRepository                  $appointmentRepository,
+        private readonly DoctorRepository                       $doctorRepository
     ) {
     }
 
@@ -50,6 +57,15 @@ class TelegramController extends Controller
             $this->messangerKeyboardButtonCallbackBuilder
         ));
 
+        $textHandlers->addHandler('Мои записи', new AppointmentMessangerHandler(
+            $this->logger,
+            $this->messangerKeyboardBuilder,
+            $this->messangerKeyboardButtonBuilder,
+            $this->messangerKeyboardButtonCallbackBuilder,
+            $this->appointmentRepository,
+            $this->doctorRepository
+        ));
+
         return $textHandlers;
     }
 
@@ -59,6 +75,26 @@ class TelegramController extends Controller
 
         $callbackQueryHandlers->addHandler('start_rocket', new StartRockerMessangerHandler(
             $this->logger
+        ));
+
+        $callbackQueryHandlers->addHandler('my_appointment', new MyAppointmentMessangerHandler(
+            $this->logger,
+            $this->messangerKeyboardBuilder,
+            $this->messangerKeyboardButtonBuilder,
+            $this->messangerKeyboardButtonCallbackBuilder
+        ));
+
+        $callbackQueryHandlers->addHandler('cancel_appointment', new CancelAppointmentMessangerHandler(
+            $this->logger,
+            $this->appointmentRepository,
+        ));
+
+        $callbackQueryHandlers->addHandler('re_entry_appointment', new ReentryAppointmentMessangerHandler(
+            $this->logger,
+            $this->messangerKeyboardBuilder,
+            $this->messangerKeyboardButtonBuilder,
+            $this->messangerKeyboardButtonCallbackBuilder,
+            $this->appointmentRepository,
         ));
 
         return $callbackQueryHandlers;
@@ -73,10 +109,6 @@ class TelegramController extends Controller
             $this->messangerKeyboardBuilder,
             $this->messangerKeyboardButtonBuilder,
             $this->messangerKeyboardButtonCallbackBuilder
-        ));
-        $commandHandlers->addHandler('test', new TestHandler(
-            $this->messangerKeyboardBuilder,
-            $this->messangerKeyboardButtonBuilder
         ));
 
         return $commandHandlers;
