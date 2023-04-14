@@ -21,16 +21,14 @@ class MyAppointmentMessangerHandler implements MessangerHandlerInterface
         protected KeyboardBuilderInterface               $keyboardBuilder,
         protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
-    )
-    {
+    ) {
     }
 
     public function handler(
         Client                           $client,
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
-    ): void
-    {
+    ): void {
         $callbackData = $request->getCallbackData();
 
         $cancelButtonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder

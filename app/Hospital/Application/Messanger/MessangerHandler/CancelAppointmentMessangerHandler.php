@@ -18,28 +18,23 @@ class CancelAppointmentMessangerHandler implements MessangerHandlerInterface
     public function __construct(
         protected LoggerInterface                        $logger,
         protected AppointmentRepository                  $appointmentRepository,
-    )
-    {
+    ) {
     }
 
     public function handler(
         Client                           $client,
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
-    ): void
-    {
+    ): void {
+        $messanger->editMessage();
         try {
             $callbackData = $request->getCallbackData();
             $appointmentId = $callbackData->getValue('appointment_id');
             $this->appointmentRepository->cancelAppointment($appointmentId);
             $messanger->setMessage('Ваша запись отменена');
-
-            $messanger->editMessage();
         } catch (AppointmentNotFoundException | AppointmentSaveFailedException $e) {
             $this->logger->error("Appointment error: {$e->getMessage()}");
             $messanger->setMessage('Не удалось отменить запись');
-
-            $messanger->editMessage();
         }
     }
 }

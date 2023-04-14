@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Hospital\Application\Messanger\MessangerHandler\AppointmentMessangerHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\AppointmentMenuMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\CancelAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\MenuMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\MyAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\PrintStartMessangerHandler;
-use App\Hospital\Application\Messanger\MessangerHandler\ReentryAppointmentMessangerHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\ReMakeAppointmentHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\StartRockerMessangerHandler;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface;
@@ -57,7 +57,7 @@ class TelegramController extends Controller
             $this->messangerKeyboardButtonCallbackBuilder
         ));
 
-        $textHandlers->addHandler('Мои записи', new AppointmentMessangerHandler(
+        $textHandlers->addHandler('Мои записи', new AppointmentMenuMessangerHandler(
             $this->logger,
             $this->messangerKeyboardBuilder,
             $this->messangerKeyboardButtonBuilder,
@@ -89,7 +89,7 @@ class TelegramController extends Controller
             $this->appointmentRepository,
         ));
 
-        $callbackQueryHandlers->addHandler('re_entry_appointment', new ReentryAppointmentMessangerHandler(
+        $callbackQueryHandlers->addHandler('re_entry_appointment', new ReMakeAppointmentHandler(
             $this->logger,
             $this->messangerKeyboardBuilder,
             $this->messangerKeyboardButtonBuilder,

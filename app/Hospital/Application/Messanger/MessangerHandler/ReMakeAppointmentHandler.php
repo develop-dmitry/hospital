@@ -16,25 +16,22 @@ use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
 use App\Hospital\Infrastructure\Repository\AppointmentRepository;
 use Psr\Log\LoggerInterface;
 
-class ReentryAppointmentMessangerHandler implements MessangerHandlerInterface
+class ReMakeAppointmentHandler implements MessangerHandlerInterface
 {
-
     public function __construct(
         protected LoggerInterface                        $logger,
         protected KeyboardBuilderInterface               $keyboardBuilder,
         protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
         protected AppointmentRepository                  $appointmentRepository,
-    )
-    {
+    ) {
     }
 
     public function handler(
         Client                           $client,
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
-    ): void
-    {
+    ): void {
         try {
             $callbackData = $request->getCallbackData();
             $appointmentId = $callbackData->getValue('appointment_id');

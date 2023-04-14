@@ -18,7 +18,7 @@ use App\Hospital\Infrastructure\Repository\DoctorRepository;
 use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use Psr\Log\LoggerInterface;
 
-class AppointmentMessangerHandler implements MessangerHandlerInterface
+class AppointmentMenuMessangerHandler implements MessangerHandlerInterface
 {
     public function __construct(
         protected LoggerInterface                        $logger,
@@ -27,24 +27,21 @@ class AppointmentMessangerHandler implements MessangerHandlerInterface
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
         protected AppointmentRepository                  $appointmentRepository,
         protected DoctorRepository                       $doctorRepository
-    )
-    {
+    ) {
     }
 
     public function handler(
         Client                           $client,
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
-    ): void
-    {
+    ): void {
         try {
             $userId = $client->getUserId();
             $appointments = $this->appointmentRepository->getByUserId($userId);
 
-            $messanger->setMessage('У вас отсутствуют активные записи');
-
-            if ($appointments) {
-                $messanger->setMessage('Ваши записи');
+            if (empty($appointments)) {
+                $messanger->setMessage('У вас отсутствуют активные записи');
+                return;
             }
 
             $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
