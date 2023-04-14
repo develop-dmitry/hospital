@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Messanger\MessangerHandler;
 
-use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
@@ -13,9 +12,6 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
-use App\Hospital\Infrastructure\Repository\AppointmentRepository;
-use App\Hospital\Infrastructure\Repository\DoctorRepository;
-use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use Psr\Log\LoggerInterface;
 
 class AppointmentMenuMessangerHandler implements MessangerHandlerInterface
@@ -25,8 +21,6 @@ class AppointmentMenuMessangerHandler implements MessangerHandlerInterface
         protected KeyboardBuilderInterface               $keyboardBuilder,
         protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
-        protected AppointmentRepository                  $appointmentRepository,
-        protected DoctorRepository                       $doctorRepository
     ) {
     }
 
@@ -35,41 +29,34 @@ class AppointmentMenuMessangerHandler implements MessangerHandlerInterface
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
     ): void {
-        try {
-            $userId = $client->getUserId();
-            $appointments = $this->appointmentRepository->getByUserId($userId);
+        $callbackData = $request->getCallbackData();
 
-            if (empty($appointments)) {
-                $messanger->setMessage('У вас отсутствуют активные записи');
-                return;
-            }
+        $cancelButtonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder
+            ->setAction('cancel_appointment')
+            ->setCallbackData(['appointment_id' => $callbackData->getValue('appointment_id')])
+            ->make();
 
-            $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
-            foreach ($appointments as $appointment) {
-                $doctor = $this->doctorRepository->getDoctorByUserId($appointment->getDoctorId());
-                $buttonText = sprintf(
-                    'Запись на %s,в %s, в %s к доктору %s',
-                    $appointment->getVisitDate()->format('d.m.Y'),
-                    $appointment->getDepartmentId(),
-                    $appointment->getVisitTime()->format('H:i'),
-                    $doctor->getName()
-                );
-                $buttonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder
-                    ->setAction('my_appointment')
-                    ->setCallbackData(['appointment_id' => $appointment->getId()])
-                    ->make();
+        $cancelButton = $this->keyboardButtonBuilder
+            ->setText('Отменить запись')
+            ->setCallbackData($cancelButtonCallbackData)
+            ->makeInlineButton();
 
-                $button = $this->keyboardButtonBuilder
-                    ->setText($buttonText)
-                    ->setCallbackData($buttonCallbackData)
-                    ->makeInlineButton();
-                $keyboard->addRow($button);
-            }
+        $reEntryButtonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder
+            ->setAction('re_entry_appointment')
+            ->setCallbackData(['appointment_id' => $callbackData->getValue('appointment_id')])
+            ->make();
 
-            $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
-        } catch (AppointmentNotFoundException | DoctorNotFoundException $e) {
-            $this->logger->error("Appointment error: {$e->getMessage()}");
-            $messanger->setMessage('У вас отсутствуют активные записи');
-        }
+        $reEntryButton = $this->keyboardButtonBuilder
+            ->setText('Повторная запись')
+            ->setCallbackData($reEntryButtonCallbackData)
+            ->makeInlineButton();
+
+        $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
+        $keyboard->addRow($cancelButton);
+        $keyboard->addRow($reEntryButton);
+
+        $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
+        $messanger->setMessage('Выберите действие');
+        $messanger->editMessage();
     }
 }
