@@ -8,6 +8,7 @@ use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Department\Exception\DepartmentNotFoundException;
+use App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface;
 use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
@@ -16,7 +17,6 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
-use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use Psr\Log\LoggerInterface;
 
@@ -29,7 +29,7 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
         protected AppointmentRepositoryInterface         $appointmentRepository,
         protected DoctorRepositoryInterface              $doctorRepository,
-        protected DepartmentRepository                   $departmentRepository
+        protected DepartmentRepositoryInterface          $departmentRepository
     ) {
     }
 
