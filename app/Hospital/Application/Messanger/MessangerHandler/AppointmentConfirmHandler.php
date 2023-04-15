@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\Messanger\MessangerHandler\CallbackQueryHandler;
+namespace App\Hospital\Application\Messanger\MessangerHandler;
 
 use App\Hospital\Domain\Appointment\Exception\AppointmentPartNotFoundException;
 use App\Hospital\Domain\Appointment\Exception\AppointmentSaveFailedException;

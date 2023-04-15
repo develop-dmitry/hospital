@@ -34,7 +34,7 @@ class ReMakeAppointmentHandler implements MessangerHandlerInterface
         try {
             $callbackData = $request->getCallbackData();
             $appointmentId = $callbackData->getValue('appointment_id');
-            $appointment = $this->appointmentRepository->getById($appointmentId);
+            $appointment = $this->appointmentRepository->getAppointmentById($appointmentId);
 
         } catch (AppointmentNotFoundException $e) {
             $this->logger->error("Appointment error: {$e->getMessage()}");

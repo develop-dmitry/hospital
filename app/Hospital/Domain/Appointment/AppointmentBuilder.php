@@ -25,6 +25,8 @@ class AppointmentBuilder implements AppointmentBuilderInterface
 
     protected ?string $visitorPhone = null;
 
+    protected bool $isCanceled = false;
+
     public function setId(int $id): static
     {
         $this->id = $id;
@@ -73,6 +75,12 @@ class AppointmentBuilder implements AppointmentBuilderInterface
         return $this;
     }
 
+    public function setCanceled(bool $canceled): static
+    {
+        $this->isCanceled = $canceled;
+        return $this;
+    }
+
     public function make(): Appointment
     {
         $appointment = new Appointment(
@@ -83,7 +91,8 @@ class AppointmentBuilder implements AppointmentBuilderInterface
             $this->clientId,
             $this->visitorName,
             $this->departmentId,
-            $this->visitorPhone
+            $this->visitorPhone,
+            $this->isCanceled
         );
 
         $this->reset();
@@ -99,5 +108,6 @@ class AppointmentBuilder implements AppointmentBuilderInterface
         $this->visitorName = null;
         $this->departmentId = null;
         $this->visitorPhone = null;
+        $this->isCanceled = false;
     }
 }

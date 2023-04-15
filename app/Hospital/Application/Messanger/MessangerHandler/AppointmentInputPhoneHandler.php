@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\Messanger\MessangerHandler\CommandHandler;
+namespace App\Hospital\Application\Messanger\MessangerHandler;
 
 use App\Hospital\Domain\Appointment\Exception\AppointmentPartSaveFailedException;
 use App\Hospital\Domain\Appointment\Exception\GenerateConfirmMessageFailedException;
@@ -15,6 +15,7 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
 class AppointmentInputPhoneHandler implements MessangerHandlerInterface
 {
@@ -43,7 +44,7 @@ class AppointmentInputPhoneHandler implements MessangerHandlerInterface
         $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
 
         $callbackData = $this->callbackBuilder
-            ->setAction('confirm_appointment')
+            ->setAction(MessangerCommand::AppointmentConfirmAction)
             ->make();
 
         $button = $this->buttonBuilder

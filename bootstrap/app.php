@@ -194,10 +194,28 @@ $app->bind(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInter
     );
 });
 
+$app->bind(\App\Hospital\Domain\Appointment\Interface\AppointmentListInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\Appointment\AppointmentList(
+        $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\CancelAppointmentInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\Appointment\CancelAppointment(
+        $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface::class)
+    );
+});
+
 $app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentRepositoryInterface::class, function () {
     return new \App\Hospital\Infrastructure\Repository\MakeAppointmentRepository(
         \Illuminate\Support\Facades\Redis::client()
     );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\ReMakeAppointmentInterface::class, function () {
+    return new \App\Hospital\Domain\Appointment\ReMakeAppointment();
 });
 
 $app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface::class, function () use ($app) {

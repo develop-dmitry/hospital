@@ -33,6 +33,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             'visitor_name' => $appointment->getVisitorName(),
             'doctor_id' => $appointment->getDoctorId(),
             'visitor_phone' => $appointment->getVisitorPhone() ?? null,
+            'canceled' => $appointment->isCanceled()
         ]);
 
         if (!$appointmentModel->save()) {
@@ -50,38 +51,29 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->where('doctor_id', $doctorId)
             ->get();
 
-        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
-    }
+        $result = [];
 
-    public function getByUserId(int $userId): array
-    {
-        $appointments = AppointmentModel::where('user_id', $userId)
-            ->where('canceled', false)
-            ->get();
-
-        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
-    }
-
-    public function cancelAppointment(int $appointmentId): void
-    {
-        $appointmentModel = AppointmentModel::find($appointmentId);
-
-        if (!$appointmentModel) {
-            throw new AppointmentNotFoundException(
-                "Appointment with id {$appointmentId} not found"
-            );
+        foreach ($appointments as $appointment) {
+            $result[] = $this->makeEntity($appointment);
         }
 
-        $appointmentModel->canceled = true;
-
-        if (!$appointmentModel->save()) {
-            throw new AppointmentSaveFailedException(
-                "Failed to cancel appointment with id {$appointmentId}"
-            );
-        }
+        return $result;
     }
 
-    public function getById(int $appointmentId): Appointment
+    public function getAppointmentsByClientId(int $clientId): array
+    {
+        $appointments = AppointmentModel::where('client_id', $clientId)->get();
+
+        $result = [];
+
+        foreach ($appointments as $appointment) {
+            $result[] = $this->makeEntity($appointment);
+        }
+
+        return $result;
+    }
+
+    public function getAppointmentById(int $appointmentId): Appointment
     {
         $appointmentModel = AppointmentModel::find($appointmentId);
 
@@ -105,6 +97,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->setVisitTime($appointmentModel->visit_time)
             ->setVisitorName($appointmentModel->visitor_name)
             ->setVisitorPhone($appointmentModel->visitor_phone)
+            ->setCanceled($appointmentModel->canceled)
             ->make();
     }
 }

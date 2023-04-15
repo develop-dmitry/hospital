@@ -24,7 +24,9 @@ use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRepositoryInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 use Psr\Log\LoggerInterface;
+use SergiX44\Nutgram\Handlers\MessageHandlers;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\RunningMode\Webhook;
 use SergiX44\Nutgram\Telegram\Types\Message\Message;
@@ -139,14 +141,17 @@ class TelegramMessangerManager implements MessangerManagerInterface
         try {
             $nextHandler = $this->messangerHandlerRepository->getNextHandler($this->getClient());
 
-            return $this->messageHandlers->getHandler($nextHandler);
+            $command = MessangerCommand::tryFrom($nextHandler);
+
+            if ($command) {
+                return $this->messageHandlers->getHandler($command);
+            }
+
         } catch (HandlerRepositoryNetworkException $exception) {
             $this->logger->error($exception->getMessage());
+        } catch (HandlerNotFoundException) {}
 
-            return null;
-        } catch (HandlerNotFoundException) {
-            return null;
-        }
+        return null;
     }
 
     /**
@@ -156,10 +161,7 @@ class TelegramMessangerManager implements MessangerManagerInterface
     {
         $client = $this->getClient();
         $nextHandler = $this->messanger->getNextHandler();
-
-        if (!$nextHandler) {
-            $nextHandler = '';
-        }
+        $nextHandler = $nextHandler->value ?? '';
 
         try {
             $this->messangerHandlerRepository->setNextHandler($nextHandler, $client);
@@ -229,8 +231,10 @@ class TelegramMessangerManager implements MessangerManagerInterface
             $callbackData = [];
         }
 
+        $command = MessangerCommand::tryFrom($callbackData['action'] ?? '');
+
         return $this->callbackDataBuilder
-            ->setAction($callbackData['action'] ?? '')
+            ->setAction($command)
             ->setCallbackData($callbackData)
             ->make();
     }

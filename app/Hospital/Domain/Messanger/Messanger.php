@@ -18,7 +18,7 @@ class Messanger implements MessangerInterface
 
     protected ?KeyboardType $messangerKeyboardType = null;
 
-    protected string $nextHandler = '';
+    protected ?MessangerCommand $nextHandler = null;
 
     public function getMessage(): string
     {
@@ -58,12 +58,12 @@ class Messanger implements MessangerInterface
         return $this->isEdit;
     }
 
-    public function setNextHandler(string $name): void
+    public function setNextHandler(MessangerCommand $name): void
     {
         $this->nextHandler = $name;
     }
 
-    public function getNextHandler(): string
+    public function getNextHandler(): ?MessangerCommand
     {
         return $this->nextHandler;
     }

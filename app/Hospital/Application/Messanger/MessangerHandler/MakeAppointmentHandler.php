@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\Messanger\MessangerHandler\CallbackQueryHandler;
+namespace App\Hospital\Application\Messanger\MessangerHandler;
 
-use App\Hospital\Domain\Appointment\Exception\AppointmentPartNotFoundException;
-use App\Hospital\Domain\Appointment\Exception\AppointmentPartSaveFailedException;
 use App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface;
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
@@ -16,14 +14,15 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonInterfa
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
-class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
+class MakeAppointmentHandler implements MessangerHandlerInterface
 {
     public function __construct(
         protected MakeAppointmentInterface $makeAppointment,
         protected KeyboardBuilderInterface $keyboardBuilder,
         protected KeyboardButtonBuilderInterface $buttonBuilder,
-        protected KeyboardButtonCallbackBuilderInterface $callbackBuilder,
+        protected KeyboardButtonCallbackBuilderInterface $callbackBuilder
     ) {
     }
 
@@ -34,23 +33,14 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
     ): void {
         $callbackData = $request->getCallbackData();
 
-        if (!$callbackData->has('doctor_id')) {
-            $messanger->setMessage('Технические неполадки, попробуйте позднее');
-            return;
+        if ($callbackData->getValue('is_edit_message', false)) {
+            $messanger->editMessage();
         }
 
-        try {
-            $this->makeAppointment->saveDoctor($client, (int) $callbackData->getValue('doctor_id'));
-
-            $buttons = $this->getDateButtons($client);
-        } catch (AppointmentPartSaveFailedException|AppointmentPartNotFoundException) {
-            $messanger->setMessage('Технические неполадки, попробуйте позднее');
-            return;
-        }
-
+        $buttons = $this->getDepartmentButtons($client);
 
         if (!$buttons) {
-            $messanger->setMessage('В ближайшее время специалист не работает');
+            $messanger->setMessage('Технические неполадки, попробуйте позднее');
             return;
         }
 
@@ -60,28 +50,26 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
             $keyboard->addRow($button);
         }
 
-        $messanger->editMessage();
-        $messanger->setMessage('Выберите дату записи');
+        $messanger->setMessage('Выберите отделение');
         $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
     }
 
     /**
      * @return KeyboardButtonInterface[]
-     * @throws AppointmentPartNotFoundException
      */
-    protected function getDateButtons(Client $client): array
+    protected function getDepartmentButtons(Client $client): array
     {
         $buttons = [];
-        $dates = $this->makeAppointment->getDates($client);
+        $departments = $this->makeAppointment->getDepartments($client);
 
-        foreach ($dates as $date) {
+        foreach ($departments as $department) {
             $callbackData = $this->callbackBuilder
-                ->setAction('appointment_choose_date')
-                ->setCallbackData(['date' => $date->format('Y-m-d')])
+                ->setAction(MessangerCommand::AppointmentChooseDepartmentAction)
+                ->setCallbackData(['department_id' => $department->getId()])
                 ->make();
 
             $buttons[] = $this->buttonBuilder
-                ->setText($date->format('d.m.Y'))
+                ->setText($department->getName())
                 ->setCallbackData($callbackData)
                 ->makeInlineButton();
         }

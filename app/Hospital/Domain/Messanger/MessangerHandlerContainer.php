@@ -15,18 +15,18 @@ class MessangerHandlerContainer implements MessangerHandlerContainerInterface
      */
     protected array $handlers = [];
 
-    public function addHandler(string $name, MessangerHandlerInterface $handler): void
+    public function addHandler(MessangerCommand $name, MessangerHandlerInterface $handler): void
     {
-        $this->handlers[$name] = $handler;
+        $this->handlers[$name->value] = $handler;
     }
 
-    public function getHandler(string $name): MessangerHandlerInterface
+    public function getHandler(MessangerCommand $name): MessangerHandlerInterface
     {
-        if (!isset($this->handlers[$name])) {
-            throw new HandlerNotFoundException("Handler for $name not found");
+        if (!isset($this->handlers[$name->value])) {
+            throw new HandlerNotFoundException("Handler for {$name->value} not found");
         }
 
-        return $this->handlers[$name];
+        return $this->handlers[$name->value];
     }
 
     public function getHandlers(): array

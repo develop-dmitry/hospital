@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace App\Hospital\Domain\Messanger\KeyboardButton;
 
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
 class KeyboardButtonCallback implements KeyboardButtonCallbackInterface
 {
     public function __construct(
-        protected string $action,
+        protected ?MessangerCommand $action,
         protected array $callbackData
     ) {
     }
 
-    public function getAction(): string
+    public function getAction(): ?MessangerCommand
     {
         return $this->action;
     }
 
-    public function setAction(string $action): void
+    public function setAction(?MessangerCommand $action): void
     {
         $this->action = $action;
     }
@@ -36,7 +37,7 @@ class KeyboardButtonCallback implements KeyboardButtonCallbackInterface
 
     public function getValue(string $name, mixed $default = ''): mixed
     {
-        return $this->callbackData[$name] ?: $default;
+        return ($this->has($name)) ? $this->callbackData[$name] : $default;
     }
 
     public function has(string $name): bool
