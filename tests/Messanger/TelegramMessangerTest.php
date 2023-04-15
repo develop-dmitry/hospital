@@ -7,6 +7,7 @@ namespace Tests\Messanger;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
 use App\Hospital\Domain\Messanger\Keyboard\Keyboard;
 use App\Hospital\Domain\Messanger\Messanger;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 use Tests\TestCase;
 
 class TelegramMessangerTest extends TestCase
@@ -33,7 +34,8 @@ class TelegramMessangerTest extends TestCase
     public function testNextHandler(): void
     {
         $messanger = new Messanger();
-        $nextHandler = 'test';
+        $nextHandler = MessangerCommand::StartCommand;
+
         $messanger->setNextHandler($nextHandler);
 
         $this->assertEquals($nextHandler, $messanger->getNextHandler());
