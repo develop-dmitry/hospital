@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hospital\Application\Messanger\MessangerHandler\CommandHandler;
+namespace App\Hospital\Application\Messanger\MessangerHandler;
 
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
@@ -12,6 +12,7 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilder
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
 class StartCommandHandler implements MessangerHandlerInterface
 {
@@ -35,15 +36,20 @@ class StartCommandHandler implements MessangerHandlerInterface
         $replyKeyboard = $this->keyboardBuilder->makeReplyKeyboard();
 
         $aboutButton = $this->buttonBuilder
-            ->setText(__('bot.menu_about'))
+            ->setText(MessangerCommand::AboutText->value)
             ->makeReplyButton();
 
         $appointmentButton = $this->buttonBuilder
-            ->setText(__('bot.menu_appointment'))
+            ->setText(MessangerCommand::MakeAppointmentText->value)
+            ->makeReplyButton();
+
+        $appointmentListButton = $this->buttonBuilder
+            ->setText(MessangerCommand::AppointmentListText->value)
             ->makeReplyButton();
 
         $replyKeyboard->addRow($aboutButton);
         $replyKeyboard->addRow($appointmentButton);
+        $replyKeyboard->addRow($appointmentListButton);
 
         return $replyKeyboard;
     }

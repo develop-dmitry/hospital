@@ -43,7 +43,7 @@ services:
     ports:
       - ${FORWARD_DB_PORT}:5432
     volumes:
-      - ./docker/postgresql:/var/lib/postgresql
+      - ./docker/postgresql:/var/lib/postgresql/data
     networks:
       - network
 

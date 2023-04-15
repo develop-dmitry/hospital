@@ -6,14 +6,15 @@ namespace App\Hospital\Domain\Messanger\KeyboardButton;
 
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
 class KeyboardButtonCallbackBuilder implements KeyboardButtonCallbackBuilderInterface
 {
-    private string $action = '';
+    private ?MessangerCommand $action = null;
 
     private array $callbackData = [];
 
-    public function setAction(string $action): static
+    public function setAction(?MessangerCommand $action): static
     {
         $this->action = $action;
         return $this;
@@ -35,7 +36,7 @@ class KeyboardButtonCallbackBuilder implements KeyboardButtonCallbackBuilderInte
 
     protected function reset(): void
     {
-        $this->action = '';
+        $this->action = null;
         $this->callbackData = [];
     }
 }

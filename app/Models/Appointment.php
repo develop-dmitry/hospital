@@ -17,6 +17,7 @@ class Appointment extends Model
         'visit_time',
         'visitor_name',
         'visitor_phone',
+        'canceled'
     ];
 
     protected $casts = [

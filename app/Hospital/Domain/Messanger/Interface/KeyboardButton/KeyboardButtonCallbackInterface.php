@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Hospital\Domain\Messanger\Interface\KeyboardButton;
 
+use App\Hospital\Domain\Messanger\MessangerCommand;
+
 interface KeyboardButtonCallbackInterface
 {
-    public function getAction(): string;
+    public function getAction(): ?MessangerCommand;
 
-    public function setAction(string $action): void;
+    public function setAction(?MessangerCommand $action): void;
 
     public function setCallbackData(array $data): void;
 

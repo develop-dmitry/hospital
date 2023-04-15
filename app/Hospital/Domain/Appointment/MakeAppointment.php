@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Hospital\Domain\Appointment;
 
 use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
+use App\Hospital\Domain\Appointment\Exception\AppointmentPartNotFoundException;
 use App\Hospital\Domain\Appointment\Exception\GenerateConfirmMessageFailedException;
 use App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface;
 use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
@@ -153,6 +154,39 @@ class MakeAppointment implements MakeAppointmentInterface
             return $message;
         } catch (Exception) {
             throw new GenerateConfirmMessageFailedException('Failed to generate confirm message');
+        }
+    }
+
+    public function hasDepartmentId(Client $client): bool
+    {
+        try {
+            $this->makeAppointmentRepository->getDepartmentId($client);
+
+            return true;
+        } catch (AppointmentPartNotFoundException) {
+            return false;
+        }
+    }
+
+    public function hasDoctorId(Client $client): bool
+    {
+        try {
+            $this->makeAppointmentRepository->getDoctorId($client);
+
+            return true;
+        } catch (AppointmentPartNotFoundException) {
+            return false;
+        }
+    }
+
+    public function hasDate(Client $client): bool
+    {
+        try {
+            $this->makeAppointmentRepository->getDate($client);
+
+            return true;
+        } catch (AppointmentPartNotFoundException) {
+            return false;
         }
     }
 }

@@ -25,5 +25,7 @@ interface AppointmentBuilderInterface
 
     public function setVisitorPhone(?string $visitorPhone): static;
 
+    public function setCanceled(bool $canceled): static;
+
     public function make(): Appointment;
 }

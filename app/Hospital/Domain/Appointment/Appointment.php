@@ -8,16 +8,18 @@ use DateTime;
 
 class Appointment
 {
-public function __construct(
-    protected ?int     $id,
-    protected DateTime $visitTime,
-    protected DateTime $visitDate,
-    protected int      $doctorId,
-    protected int      $clientId,
-    protected string   $visitorName,
-    protected int      $departmentId,
-    protected ?string  $visitorPhone,
-) {}
+    public function __construct(
+        protected ?int     $id,
+        protected DateTime $visitTime,
+        protected DateTime $visitDate,
+        protected int      $doctorId,
+        protected int      $clientId,
+        protected string   $visitorName,
+        protected int      $departmentId,
+        protected ?string  $visitorPhone,
+        protected bool     $isCanceled
+    ) {
+    }
 
     /**
      * @return int|null
@@ -152,4 +154,21 @@ public function __construct(
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isCanceled(): bool
+    {
+        return $this->isCanceled;
+    }
+
+    /**
+     * @param bool $canceled
+     * @return Appointment
+     */
+    public function setCanceled(bool $canceled): Appointment
+    {
+        $this->isCanceled = $canceled;
+        return $this;
+    }
 }

@@ -26,6 +26,7 @@ use App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterfa
 use App\Hospital\Domain\User\Interface\UserBuilderInterface;
 use App\Hospital\Domain\User\Interface\UserRepositoryInterface;
 use DateTime;
+use Illuminate\Support\Facades\Date;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -478,6 +479,120 @@ class MakeAppointmentTest extends TestCase
 
         $this->expectException(AppointmentSaveFailedException::class);
         $makeAppointment->makeAppointment($this->client);
+    }
+
+    public function testHasDepartmentId(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDepartmentId')->willReturn(1);
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertTrue($makeAppointment->hasDepartmentId($this->client));
+    }
+
+    public function testHasDepartmentIdFailed(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDepartmentId')->willThrowException(
+            new AppointmentPartNotFoundException()
+        );
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertFalse($makeAppointment->hasDepartmentId($this->client));
+    }
+
+    public function testHasDoctorId(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDoctorId')->willReturn(1);
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertTrue($makeAppointment->hasDoctorId($this->client));
+    }
+
+    public function testHasDoctorIdFailed(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDoctorId')->willThrowException(
+            new AppointmentPartNotFoundException()
+        );
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertFalse($makeAppointment->hasDoctorId($this->client));
+    }
+
+    public function testHasDate(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDate')->willReturn(new DateTime());
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertTrue($makeAppointment->hasDate($this->client));
+    }
+
+    public function testHasDateFailed(): void
+    {
+        $makeAppointmentRepository = $this->getMockBuilder(MakeAppointmentRepositoryInterface::class)
+            ->getMock();
+        $makeAppointmentRepository->method('getDate')->willThrowException(
+            new AppointmentPartNotFoundException()
+        );
+
+        $makeAppointment = new MakeAppointment(
+            $makeAppointmentRepository,
+            $this->getMockBuilder(DepartmentRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorScheduleRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(DoctorRepositoryInterface::class)->getMock(),
+            $this->getMockBuilder(AppointmentRepositoryInterface::class)->getMock(),
+            $this->appointmentBuilder
+        );
+
+        $this->assertFalse($makeAppointment->hasDate($this->client));
     }
 
     protected function setUp(): void

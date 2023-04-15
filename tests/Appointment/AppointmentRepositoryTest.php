@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Appointment;
 
+use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface;
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Client\Interface\ClientBuilderInterface;
@@ -92,6 +93,78 @@ class AppointmentRepositoryTest extends TestCase
         }
 
         $this->assertTrue($hasAppointment);
+    }
+
+    public function testGetAppointmentsByClientId(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+        $appointment = $this->appointmentBuilder
+            ->setDepartmentId($this->department->getId())
+            ->setVisitorPhone('+79999999999')
+            ->setVisitorName('test')
+            ->setVisitTime($this->time)
+            ->setVisitDate($this->date)
+            ->setDoctorId($this->doctor->getId())
+            ->setClientId($this->client->getId())
+            ->make();
+        $appointmentRepository->saveAppointment($appointment);
+
+        $this->assertCount(
+            1,
+            $appointmentRepository->getAppointmentsByClientId($this->client->getId())
+        );
+    }
+
+    public function testGetAppointmentsByClientIdEmpty(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+
+        $this->assertEmpty($appointmentRepository->getAppointmentsByClientId($this->client->getId()));
+    }
+
+    public function testGetAppointmentById(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+        $appointment = $this->appointmentBuilder
+            ->setDepartmentId($this->department->getId())
+            ->setVisitorPhone('+79999999999')
+            ->setVisitorName('test')
+            ->setVisitTime($this->time)
+            ->setVisitDate($this->date)
+            ->setDoctorId($this->doctor->getId())
+            ->setClientId($this->client->getId())
+            ->make();
+        $appointmentId = $appointmentRepository->saveAppointment($appointment);
+
+        $this->expectNotToPerformAssertions();
+        $appointmentRepository->getAppointmentById($appointmentId);
+    }
+
+    public function testEntityGetAppointmentById(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+        $appointment = $this->appointmentBuilder
+            ->setDepartmentId($this->department->getId())
+            ->setVisitorPhone('+79999999999')
+            ->setVisitorName('test')
+            ->setVisitTime($this->time)
+            ->setVisitDate($this->date)
+            ->setDoctorId($this->doctor->getId())
+            ->setClientId($this->client->getId())
+            ->make();
+        $appointmentId = $appointmentRepository->saveAppointment($appointment);
+
+        $appointmentFromRepository = $appointmentRepository->getAppointmentById($appointmentId);
+
+        $this->assertEquals($appointment->getClientId(), $appointmentFromRepository->getClientId());
+    }
+
+    public function testGetAppointmentByIdFailed(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+
+        $this->expectException(AppointmentNotFoundException::class);
+        $appointmentRepository->getAppointmentById(13213321);
     }
 
     protected function setUp(): void

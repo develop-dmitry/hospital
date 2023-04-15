@@ -6,6 +6,7 @@ namespace App\Hospital\Domain\Messanger\Interface;
 
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardInterface;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 
 interface MessangerInterface
 {
@@ -26,7 +27,7 @@ interface MessangerInterface
 
     public function isEditMessage(): bool;
 
-    public function setNextHandler(string $name): void;
+    public function setNextHandler(MessangerCommand $name): void;
 
-    public function getNextHandler(): string;
+    public function getNextHandler(): ?MessangerCommand;
 }

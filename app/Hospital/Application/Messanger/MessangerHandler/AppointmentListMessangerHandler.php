@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Hospital\Application\Messanger\MessangerHandler;
 
-use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
-use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
+use App\Hospital\Domain\Appointment\Appointment;
+use App\Hospital\Domain\Appointment\Interface\AppointmentListInterface;
 use App\Hospital\Domain\Client\Client;
-use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
+use App\Hospital\Domain\Messanger\Interface\KeyboardButton\InlineKeyboardButtonInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
-use App\Hospital\Infrastructure\Repository\AppointmentRepository;
-use App\Hospital\Infrastructure\Repository\DoctorRepository;
-use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
+use App\Hospital\Domain\Messanger\MessangerCommand;
 use Psr\Log\LoggerInterface;
 
 class AppointmentListMessangerHandler implements MessangerHandlerInterface
@@ -25,10 +23,9 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
     public function __construct(
         protected LoggerInterface                        $logger,
         protected KeyboardBuilderInterface               $keyboardBuilder,
-        protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
-        protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
-        protected AppointmentRepositoryInterface         $appointmentRepository,
-        protected DoctorRepositoryInterface              $doctorRepository
+        protected KeyboardButtonBuilderInterface         $buttonBuilder,
+        protected KeyboardButtonCallbackBuilderInterface $buttonCallbackDataBuilder,
+        protected AppointmentListInterface               $appointmentList
     ) {
     }
 
@@ -37,41 +34,51 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
         MessangerHandlerRequestInterface $request,
         MessangerInterface               $messanger
     ): void {
-        try {
-            $userId = $client->getUserId();
-            $appointments = $this->appointmentRepository->getByUserId($userId);
+        $callbackData = $request->getCallbackData();
 
-            if (empty($appointments)) {
-                $messanger->setMessage('У вас отсутствуют активные записи');
-                return;
-            }
-
-            $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
-            foreach ($appointments as $appointment) {
-                $doctor = $this->doctorRepository->getDoctorByUserId($appointment->getDoctorId());
-                $buttonText = sprintf(
-                    'Запись на %s,в %s, в %s к доктору %s',
-                    $appointment->getVisitDate()->format('d.m.Y'),
-                    $appointment->getDepartmentId(),
-                    $appointment->getVisitTime()->format('H:i'),
-                    $doctor->getName()
-                );
-                $buttonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder
-                    ->setAction('my_appointment')
-                    ->setCallbackData(['appointment_id' => $appointment->getId()])
-                    ->make();
-
-                $button = $this->keyboardButtonBuilder
-                    ->setText($buttonText)
-                    ->setCallbackData($buttonCallbackData)
-                    ->makeInlineButton();
-                $keyboard->addRow($button);
-            }
-            $messanger->setMessage('Ваши записи');
-            $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
-        } catch (AppointmentNotFoundException | DoctorNotFoundException $e) {
-            $this->logger->error("Appointment error: {$e->getMessage()}");
-            $messanger->setMessage('У вас отсутствуют активные записи');
+        if ($callbackData->getValue('edit_current_message', false)) {
+            $messanger->editMessage();
         }
+
+        $appointments = $this->appointmentList->getAppointments($client->getId());
+
+        if (empty($appointments)) {
+            $messanger->setMessage('У вас отсутствуют записи');
+            return;
+        }
+
+        $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
+        $buttons = $this->getAppointmentButtons($appointments);
+
+        foreach ($buttons as $button) {
+            $keyboard->addRow($button);
+        }
+
+        $messanger->setMessage('Список записей');
+        $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
+    }
+
+    /**
+     * @param Appointment[] $appointments
+     * @return InlineKeyboardButtonInterface[]
+     */
+    protected function getAppointmentButtons(array $appointments): array
+    {
+        $buttons = [];
+
+        foreach ($appointments as $appointment) {
+            $buttonText = $this->appointmentList->getShortAppointmentFormattedRow($appointment);
+            $buttonCallbackData = $this->buttonCallbackDataBuilder
+                ->setAction(MessangerCommand::AppointmentMenuAction)
+                ->setCallbackData(['appointment_id' => $appointment->getId()])
+                ->make();
+
+            $buttons[] = $this->buttonBuilder
+                ->setText($buttonText)
+                ->setCallbackData($buttonCallbackData)
+                ->makeInlineButton();
+        }
+
+        return $buttons;
     }
 }

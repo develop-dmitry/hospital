@@ -98,4 +98,22 @@ interface MakeAppointmentInterface
      * @throws GenerateConfirmMessageFailedException
      */
     public function getConfirmMessage(Client $client): string;
+
+    /**
+     * @param Client $client
+     * @return bool
+     */
+    public function hasDepartmentId(Client $client): bool;
+
+    /**
+     * @param Client $client
+     * @return bool
+     */
+    public function hasDoctorId(Client $client): bool;
+
+    /**
+     * @param Client $client
+     * @return bool
+     */
+    public function hasDate(Client $client): bool;
 }
