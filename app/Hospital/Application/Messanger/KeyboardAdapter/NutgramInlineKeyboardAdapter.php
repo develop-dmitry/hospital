@@ -10,11 +10,11 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
 class NutgramInlineKeyboardAdapter extends InlineKeyboardMarkup
 {
-    public function __construct(KeyboardInterface $messangerKeyboard)
+    public function __construct(KeyboardInterface $keyboard)
     {
         parent::__construct();
 
-        foreach ($messangerKeyboard->getRows() as $row) {
+        foreach ($keyboard->getRows() as $row) {
             foreach ($row as $button) {
                 $this->addRow(new NutgramInlineKeyboardButtonAdapter($button));
             }

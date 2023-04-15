@@ -10,11 +10,11 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 
 class NutgramReplyKeyboardAdapter extends ReplyKeyboardMarkup
 {
-    public function __construct(KeyboardInterface $messangerKeyboard)
+    public function __construct(KeyboardInterface $keyboard)
     {
         parent::__construct(true);
 
-        foreach ($messangerKeyboard->getRows() as $row) {
+        foreach ($keyboard->getRows() as $row) {
             foreach ($row as $button) {
                 $this->addRow(new NutgramKeyboardButtonAdapter($button));
             }

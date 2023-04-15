@@ -25,7 +25,7 @@ interface DepartmentRepositoryInterface
     public function findDepartmentById(int $departmentId): Department;
 
     /**
-     * @return array
+     * @return Department[]
      */
     public function getAll(): array;
 }

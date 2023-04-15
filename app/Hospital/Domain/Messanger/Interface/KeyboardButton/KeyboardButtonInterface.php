@@ -8,13 +8,7 @@ interface KeyboardButtonInterface
 {
     public function setText(string $text): void;
 
-    public function setUrl(string $url): void;
-
-    public function setCallbackData(KeyboardButtonCallbackInterface $callbackData): void;
-
     public function getText(): ?string;
 
-    public function getUrl(): ?string;
-
-    public function getCallbackData(): ?KeyboardButtonCallbackInterface;
+    public function getButtonParams(): array;
 }

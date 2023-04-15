@@ -12,7 +12,11 @@ interface KeyboardButtonBuilderInterface
 
     public function setCallbackData(KeyboardButtonCallbackInterface $callbackData): static;
 
-    public function makeInlineButton(): KeyboardButtonInterface;
+    public function sendRequestContact(): static;
 
-    public function makeButton(): KeyboardButtonInterface;
+    public function setQueryInCurrentChat(string $queryInCurrentChat): static;
+
+    public function makeInlineButton(): InlineKeyboardButtonInterface;
+
+    public function makeReplyButton(): ReplyKeyboardButtonInterface;
 }

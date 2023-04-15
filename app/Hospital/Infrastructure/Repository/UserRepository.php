@@ -93,7 +93,7 @@ class UserRepository implements UserRepositoryInterface
         try {
             $userModel = UserModel::findOrFail($id);
 
-            return $this->userBuilder->makeFromModel($userModel);
+            return $this->makeEntity($userModel);
         } catch (ModelNotFoundException) {
             throw new UserNotFoundException("User with id $id not found");
         }

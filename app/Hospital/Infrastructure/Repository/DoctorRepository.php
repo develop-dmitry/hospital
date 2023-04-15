@@ -30,7 +30,7 @@ class DoctorRepository implements DoctorRepositoryInterface
 
             return $this->makeEntity($doctorModel);
         } catch (ModelNotFoundException) {
-            throw new DoctorNotFoundException("Doctor with id = $id not found");
+            throw new DoctorNotFoundException("Doctor with user id = $id not found");
         }
     }
 
@@ -73,6 +73,30 @@ class DoctorRepository implements DoctorRepositoryInterface
         return $doctorModel->id;
     }
 
+    public function getDoctorsByDepartmentId(int $departmentId): array
+    {
+        $doctorModels = DoctorModel::where('department_id', $departmentId)->get();
+
+        $result = [];
+
+        foreach ($doctorModels as $doctor) {
+            $result[] = $this->makeEntity($doctor);
+        }
+
+        return $result;
+    }
+
+    public function getDoctorById(int $doctorId): Doctor
+    {
+        try {
+            $doctorModel = DoctorModel::findOrFail($doctorId);
+
+            return $this->makeEntity($doctorModel);
+        } catch (ModelNotFoundException) {
+            throw new DoctorNotFoundException("Doctor with id = $doctorId not found");
+        }
+    }
+
     protected function makeEntity(DoctorModel $doctor): Doctor
     {
         $userModel = $doctor->user()->first();
@@ -89,29 +113,5 @@ class DoctorRepository implements DoctorRepositoryInterface
             ->setId($doctor->id)
             ->setDepartmentId($doctor->department_id)
             ->make();
-    }
-
-    public function getById(int $id): Doctor
-    {
-        $doctorModel = DoctorModel::find($id);
-
-        if (!$doctorModel) {
-            throw new DoctorNotFoundException("Doctor with id = $id not found");
-        }
-
-        return $this->makeEntity($doctorModel);
-    }
-
-    public function getByDepartmentId(int $departmentId): array
-    {
-        try {
-            $doctorModels = DoctorModel::where('department_id', $departmentId)->get();
-
-            return $doctorModels->map(function($doctorModel) {
-                return $this->makeEntity($doctorModel);
-            })->toArray();
-        } catch (ModelNotFoundException) {
-            throw new DoctorNotFoundException("Doctor with departmentId = $departmentId not found");
-        }
     }
 }

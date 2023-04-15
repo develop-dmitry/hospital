@@ -156,6 +156,10 @@ $app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerInterface::class, f
     return new \App\Hospital\Domain\Messanger\Messanger();
 });
 
+$app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerHandlerRepositoryInterface::class, function () {
+    return new \App\Hospital\Infrastructure\Repository\MessangerHandlerRepository();
+});
+
 $app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface::class, function () use ($app) {
     return new \App\Hospital\Infrastructure\Messanger\TelegramMessangerManager(
         $app->make(\App\Hospital\Domain\Client\Interface\ClientRepositoryInterface::class),
@@ -163,6 +167,7 @@ $app->bind(\App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface::c
         $app->make(\App\Hospital\Domain\Messanger\Interface\MessangerInterface::class),
         $app->make('telegram.bot'),
         $app->make(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface::class),
+        $app->make(\App\Hospital\Domain\Messanger\Interface\MessangerHandlerRepositoryInterface::class),
         $app->make(\Psr\Log\LoggerInterface::class)
     );
 });
@@ -177,6 +182,33 @@ $app->bind(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButto
 
 $app->bind(\App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface::class, function () {
     return new \App\Hospital\Domain\Messanger\KeyboardButton\KeyboardButtonCallbackBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface::class, function () {
+    return new \App\Hospital\Domain\Appointment\AppointmentBuilder();
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface::class, function () use ($app) {
+    return new \App\Hospital\Infrastructure\Repository\AppointmentRepository(
+        $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentRepositoryInterface::class, function () {
+    return new \App\Hospital\Infrastructure\Repository\MakeAppointmentRepository(
+        \Illuminate\Support\Facades\Redis::client()
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\Appointment\MakeAppointment(
+        $app->make(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\DoctorSchedule\Interface\DoctorScheduleRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface::class),
+        $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface::class)
+    );
 });
 
 /*

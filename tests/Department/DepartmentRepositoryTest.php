@@ -9,10 +9,13 @@ use App\Hospital\Domain\Department\Exception\DepartmentNotFoundException;
 use App\Hospital\Domain\Department\Interface\DepartmentBuilderInterface;
 use App\Hospital\Domain\Department\Interface\DepartmentRepositoryInterface;
 use App\Hospital\Infrastructure\Repository\DepartmentRepository;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class DepartmentRepositoryTest extends TestCase
 {
+    use DatabaseTransactions;
+
     protected DepartmentBuilderInterface $departmentBuilder;
 
     public function testSaveDepartmentSuccess(): void

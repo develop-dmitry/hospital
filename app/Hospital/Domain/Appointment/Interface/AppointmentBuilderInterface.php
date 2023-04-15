@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Hospital\Domain\Appointment\Interface;
 
 use App\Hospital\Domain\Appointment\Appointment;
+use DateTime;
 
 interface AppointmentBuilderInterface
 {
     public function setId(int $id): static;
 
-    public function setVisitTime($visitTime): static;
+    public function setVisitTime(DateTime $visitTime): static;
 
-    public function setVisitDate($visitDate): static;
+    public function setVisitDate(DateTime $visitDate): static;
 
     public function setDoctorId(int $doctorId): static;
 
-    public function setUserId(int $userId): static;
+    public function setClientId(int $clientId): static;
 
     public function setVisitorName(string $visitorName): static;
 

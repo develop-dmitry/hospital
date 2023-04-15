@@ -9,7 +9,8 @@ class Client
     public function __construct(
         protected ?int $id,
         protected ?int $userId,
-        protected ?int $telegramId
+        protected ?int $telegramId,
+        protected string $name = ''
     ) {
     }
 
@@ -65,5 +66,21 @@ class Client
     {
         $this->telegramId = $telegramId;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }
