@@ -9,10 +9,10 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
 
 class NutgramKeyboardButtonAdapter extends KeyboardButton
 {
-    private KeyboardButtonInterface $messangerKeyboardButton;
-
-    public function __construct(KeyboardButtonInterface $messangerKeyboardButton)
+    public function __construct(KeyboardButtonInterface $keyboardButton)
     {
-        parent::__construct($messangerKeyboardButton->getText());
+        $params = $keyboardButton->getButtonParams();
+
+        parent::__construct($keyboardButton->getText(), $params['isSendRequestContact'] ?? null);
     }
 }

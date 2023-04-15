@@ -22,7 +22,6 @@ class User extends Model
         'login',
         'password',
         'auth_token',
-        'telegram_id'
     ];
 
     /**

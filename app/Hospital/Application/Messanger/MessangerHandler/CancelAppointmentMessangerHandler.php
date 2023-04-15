@@ -6,6 +6,7 @@ namespace App\Hospital\Application\Messanger\MessangerHandler;
 
 use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Appointment\Exception\AppointmentSaveFailedException;
+use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
 use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
@@ -16,8 +17,8 @@ use Psr\Log\LoggerInterface;
 class CancelAppointmentMessangerHandler implements MessangerHandlerInterface
 {
     public function __construct(
-        protected LoggerInterface                        $logger,
-        protected AppointmentRepository                  $appointmentRepository,
+        protected LoggerInterface                $logger,
+        protected AppointmentRepositoryInterface $appointmentRepository,
     ) {
     }
 

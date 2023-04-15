@@ -39,6 +39,11 @@ class KeyboardButtonCallback implements KeyboardButtonCallbackInterface
         return $this->callbackData[$name] ?: $default;
     }
 
+    public function has(string $name): bool
+    {
+        return isset($this->callbackData[$name]);
+    }
+
     public function getButtonParams(): array
     {
         return array_merge(['action' => $this->action], $this->getCallbackData());

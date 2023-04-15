@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Hospital\Application\Messanger\MessangerHandler;
 
 use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
+use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
 use App\Hospital\Domain\Client\Client;
+use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface;
@@ -25,8 +27,8 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
         protected KeyboardBuilderInterface               $keyboardBuilder,
         protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
-        protected AppointmentRepository                  $appointmentRepository,
-        protected DoctorRepository                       $doctorRepository
+        protected AppointmentRepositoryInterface         $appointmentRepository,
+        protected DoctorRepositoryInterface              $doctorRepository
     ) {
     }
 

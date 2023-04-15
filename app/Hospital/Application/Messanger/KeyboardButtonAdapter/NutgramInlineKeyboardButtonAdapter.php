@@ -9,17 +9,17 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 
 class NutgramInlineKeyboardButtonAdapter extends InlineKeyboardButton
 {
-    private KeyboardButtonInterface $messangerKeyboardButton;
-
-    public function __construct(KeyboardButtonInterface $messangerKeyboardButton)
+    public function __construct(KeyboardButtonInterface $keyboardButton)
     {
-        $callbackData = $messangerKeyboardButton->getCallbackData();
+        $params = $keyboardButton->getButtonParams();
 
         parent::__construct(
-            $messangerKeyboardButton->getText(),
-            $messangerKeyboardButton->getUrl(),
+            $keyboardButton->getText(),
+            $params['url'] ?? null,
             null,
-            json_encode(($callbackData) ? $callbackData->getButtonParams() : [])
+            ($params['callbackQuery']) ? json_encode($params['callbackQuery']) : null,
+            null,
+            $params['queryInCurrentChat'] ?? null
         );
     }
 }
