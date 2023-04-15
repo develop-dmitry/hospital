@@ -14,8 +14,8 @@ class AppointmentRepository implements AppointmentRepositoryInterface
 {
     public function __construct(
         protected AppointmentBuilder $appointmentBuilder
-    ) {}
-
+    ) {
+    }
 
     public function saveAppointment(Appointment $appointment): int
     {
@@ -50,13 +50,48 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->where('doctor_id', $doctorId)
             ->get();
 
-        $result = [];
+        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
+    }
 
-        foreach ($appointments as $appointment) {
-            $result[] = $this->makeEntity($appointment);
+    public function getByUserId(int $userId): array
+    {
+        $appointments = AppointmentModel::where('user_id', $userId)
+            ->where('canceled', false)
+            ->get();
+
+        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
+    }
+
+    public function cancelAppointment(int $appointmentId): void
+    {
+        $appointmentModel = AppointmentModel::find($appointmentId);
+
+        if (!$appointmentModel) {
+            throw new AppointmentNotFoundException(
+                "Appointment with id {$appointmentId} not found"
+            );
         }
 
-        return $result;
+        $appointmentModel->canceled = true;
+
+        if (!$appointmentModel->save()) {
+            throw new AppointmentSaveFailedException(
+                "Failed to cancel appointment with id {$appointmentId}"
+            );
+        }
+    }
+
+    public function getById(int $appointmentId): Appointment
+    {
+        $appointmentModel = AppointmentModel::find($appointmentId);
+
+        if (!$appointmentModel) {
+            throw new AppointmentNotFoundException(
+                "Appointment with id {$appointmentId} not found"
+            );
+        }
+
+        return $this->makeEntity($appointmentModel);
     }
 
     protected function makeEntity(AppointmentModel $appointmentModel): Appointment

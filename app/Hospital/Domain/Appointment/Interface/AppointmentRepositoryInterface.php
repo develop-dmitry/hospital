@@ -23,4 +23,25 @@ interface AppointmentRepositoryInterface
      * @throws AppointmentSaveFailedException
      */
     public function saveAppointment(Appointment $appointment): int;
+
+    /**
+     * @param int $appointmentId
+     * @return void
+     * @throws AppointmentSaveFailedException
+     * @throws AppointmentNotFoundException
+     */
+    public function cancelAppointment(int $appointmentId): void;
+
+    /**
+     * @param int $userId
+     * @return array
+     */
+    public function getByUserId(int $userId): array;
+
+    /**
+     * @param int $appointmentId
+     * @return Appointment
+     * @throws AppointmentNotFoundException
+     */
+    public function getById(int $appointmentId): Appointment;
 }
