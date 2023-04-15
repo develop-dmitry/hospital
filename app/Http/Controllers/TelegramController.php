@@ -26,6 +26,7 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerContainerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerManagerInterface;
 use App\Hospital\Domain\Messanger\MessangerHandlerContainer;
+use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use Illuminate\Http\Request;
 use Psr\Log\LoggerInterface;
 
@@ -39,7 +40,8 @@ class TelegramController extends Controller
         private readonly KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackBuilder,
         private readonly AppointmentRepositoryInterface         $appointmentRepository,
         private readonly DoctorRepositoryInterface              $doctorRepository,
-        private readonly MakeAppointmentInterface               $makeAppointment
+        private readonly MakeAppointmentInterface               $makeAppointment,
+        private readonly DepartmentRepository                   $departmentRepository
     ) {
     }
 
@@ -72,13 +74,14 @@ class TelegramController extends Controller
             $this->messangerKeyboardButtonCallbackBuilder
         ));
 
-        $textHandlers->addHandler('Мои записи', new AppointmentListMessangerHandler(
+        $textHandlers->addHandler(__('bot.appointment_list'), new AppointmentListMessangerHandler(
             $this->logger,
             $this->messangerKeyboardBuilder,
             $this->messangerKeyboardButtonBuilder,
             $this->messangerKeyboardButtonCallbackBuilder,
             $this->appointmentRepository,
-            $this->doctorRepository
+            $this->doctorRepository,
+            $this->departmentRepository
         ));
 
         return $textHandlers;
@@ -109,6 +112,14 @@ class TelegramController extends Controller
             $this->messangerKeyboardButtonCallbackBuilder
         ));
 
+        $callbackQueryHandlers->addHandler('remake_appointment_date', new AppointmentChooseDoctorHandler(
+            $this->makeAppointment,
+            $this->messangerKeyboardBuilder,
+            $this->messangerKeyboardButtonBuilder,
+            $this->messangerKeyboardButtonCallbackBuilder
+        ));
+
+
         $callbackQueryHandlers->addHandler('appointment_choose_time', new AppointmentChooseTimeHandler(
             $this->makeAppointment,
         ));
@@ -130,12 +141,13 @@ class TelegramController extends Controller
             $this->appointmentRepository,
         ));
 
-        $callbackQueryHandlers->addHandler('re_entry_appointment', new ReMakeAppointmentHandler(
+        $callbackQueryHandlers->addHandler('remake_appointment', new ReMakeAppointmentHandler(
             $this->logger,
             $this->messangerKeyboardBuilder,
             $this->messangerKeyboardButtonBuilder,
             $this->messangerKeyboardButtonCallbackBuilder,
             $this->appointmentRepository,
+            $this->makeAppointment
         ));
 
         return $callbackQueryHandlers;

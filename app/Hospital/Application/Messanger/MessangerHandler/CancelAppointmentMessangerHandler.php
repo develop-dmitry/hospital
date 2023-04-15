@@ -11,7 +11,6 @@ use App\Hospital\Domain\Client\Client;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
-use App\Hospital\Infrastructure\Repository\AppointmentRepository;
 use Psr\Log\LoggerInterface;
 
 class CancelAppointmentMessangerHandler implements MessangerHandlerInterface

@@ -31,29 +31,34 @@ class MakeAppointment implements MakeAppointmentInterface
     ) {
     }
 
-    public function saveDepartment(Client $client, int $departmentId): void
+    public function saveDepartment(Client $client, int $departmentId): static
     {
         $this->makeAppointmentRepository->saveDepartmentId($client, $departmentId);
+        return $this;
     }
 
-    public function saveDoctor(Client $client, int $doctorId): void
+    public function saveDoctor(Client $client, int $doctorId): static
     {
        $this->makeAppointmentRepository->saveDoctorId($client, $doctorId);
+        return $this;
     }
 
-    public function saveDate(Client $client, DateTime $date): void
+    public function saveDate(Client $client, DateTime $date): static
     {
         $this->makeAppointmentRepository->saveDate($client, $date);
+        return $this;
     }
 
-    public function saveTime(Client $client, string $time): void
+    public function saveTime(Client $client, string $time): static
     {
         $this->makeAppointmentRepository->saveTime($client, $time);
+        return $this;
     }
 
-    public function savePhone(Client $client, string $phone): void
+    public function savePhone(Client $client, string $phone): static
     {
         $this->makeAppointmentRepository->savePhone($client, $phone);
+        return $this;
     }
 
     public function makeAppointment(Client $client): void

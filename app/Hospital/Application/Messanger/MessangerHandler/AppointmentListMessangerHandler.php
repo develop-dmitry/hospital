@@ -7,6 +7,7 @@ namespace App\Hospital\Application\Messanger\MessangerHandler;
 use App\Hospital\Domain\Appointment\Exception\AppointmentNotFoundException;
 use App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface;
 use App\Hospital\Domain\Client\Client;
+use App\Hospital\Domain\Department\Exception\DepartmentNotFoundException;
 use App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
@@ -15,8 +16,7 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
-use App\Hospital\Infrastructure\Repository\AppointmentRepository;
-use App\Hospital\Infrastructure\Repository\DoctorRepository;
+use App\Hospital\Infrastructure\Repository\DepartmentRepository;
 use App\Hospital\Domain\Doctor\Exception\DoctorNotFoundException;
 use Psr\Log\LoggerInterface;
 
@@ -28,7 +28,8 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
         protected KeyboardButtonBuilderInterface         $keyboardButtonBuilder,
         protected KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackDataBuilder,
         protected AppointmentRepositoryInterface         $appointmentRepository,
-        protected DoctorRepositoryInterface              $doctorRepository
+        protected DoctorRepositoryInterface              $doctorRepository,
+        protected DepartmentRepository                   $departmentRepository
     ) {
     }
 
@@ -38,8 +39,8 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
         MessangerInterface               $messanger
     ): void {
         try {
-            $userId = $client->getUserId();
-            $appointments = $this->appointmentRepository->getByUserId($userId);
+            $id = $client->getId();
+            $appointments = $this->appointmentRepository->getByClientId($id);
 
             if (empty($appointments)) {
                 $messanger->setMessage('У вас отсутствуют активные записи');
@@ -48,11 +49,12 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
 
             $keyboard = $this->keyboardBuilder->makeInlineKeyboard();
             foreach ($appointments as $appointment) {
-                $doctor = $this->doctorRepository->getDoctorByUserId($appointment->getDoctorId());
+                $doctor = $this->doctorRepository->getDoctorById($appointment->getDoctorId());
+                $department = $this->departmentRepository->findDepartmentById($appointment->getDepartmentId());
                 $buttonText = sprintf(
-                    'Запись на %s,в %s, в %s к доктору %s',
+                    'Дата %s,в %s, в %s к доктору %s',
                     $appointment->getVisitDate()->format('d.m.Y'),
-                    $appointment->getDepartmentId(),
+                    $department->getName(),
                     $appointment->getVisitTime()->format('H:i'),
                     $doctor->getName()
                 );
@@ -67,9 +69,10 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
                     ->makeInlineButton();
                 $keyboard->addRow($button);
             }
+
             $messanger->setMessage('Ваши записи');
             $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
-        } catch (AppointmentNotFoundException | DoctorNotFoundException $e) {
+        } catch (AppointmentNotFoundException | DoctorNotFoundException | DepartmentNotFoundException $e) {
             $this->logger->error("Appointment error: {$e->getMessage()}");
             $messanger->setMessage('У вас отсутствуют активные записи');
         }

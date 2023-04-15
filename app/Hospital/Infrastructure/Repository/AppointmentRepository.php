@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Hospital\Infrastructure\Repository;
@@ -50,16 +51,26 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->where('doctor_id', $doctorId)
             ->get();
 
-        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
+        return $appointments->map(fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
     }
 
     public function getByUserId(int $userId): array
     {
         $appointments = AppointmentModel::where('user_id', $userId)
             ->where('canceled', false)
+            ->where('visit_date', '>=', now()->toDateString())
             ->get();
 
-        return $appointments->map(static fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
+        return $appointments->map(fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
+    }
+
+    public function getByClientId(int $clientId): array
+    {
+        $appointments = AppointmentModel::where('client_id', $clientId)
+            ->where('canceled', false)
+            ->get();
+
+        return $appointments->map(fn ($appointmentModel) => $this->makeEntity($appointmentModel))->toArray();
     }
 
     public function cancelAppointment(int $appointmentId): void

@@ -12,13 +12,15 @@ use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\Keyboard\KeyboardType;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonBuilderInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackBuilderInterface;
-use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 use App\Hospital\Domain\Messanger\Interface\MessangerInterface;
+use App\Hospital\Application\Messanger\Traits\DateButtonsTrait;
 
 class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
 {
+    use DateButtonsTrait;
+
     public function __construct(
         protected MakeAppointmentInterface $makeAppointment,
         protected KeyboardBuilderInterface $keyboardBuilder,
@@ -43,7 +45,7 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
             $this->makeAppointment->saveDoctor($client, (int) $callbackData->getValue('doctor_id'));
 
             $buttons = $this->getDateButtons($client);
-        } catch (AppointmentPartSaveFailedException|AppointmentPartNotFoundException) {
+        } catch (AppointmentPartSaveFailedException | AppointmentPartNotFoundException) {
             $messanger->setMessage('Технические неполадки, попробуйте позднее');
             return;
         }
@@ -63,29 +65,5 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
         $messanger->editMessage();
         $messanger->setMessage('Выберите дату записи');
         $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
-    }
-
-    /**
-     * @return KeyboardButtonInterface[]
-     * @throws AppointmentPartNotFoundException
-     */
-    protected function getDateButtons(Client $client): array
-    {
-        $buttons = [];
-        $dates = $this->makeAppointment->getDates($client);
-
-        foreach ($dates as $date) {
-            $callbackData = $this->callbackBuilder
-                ->setAction('appointment_choose_date')
-                ->setCallbackData(['date' => $date->format('Y-m-d')])
-                ->make();
-
-            $buttons[] = $this->buttonBuilder
-                ->setText($date->format('d.m.Y'))
-                ->setCallbackData($callbackData)
-                ->makeInlineButton();
-        }
-
-        return $buttons;
     }
 }

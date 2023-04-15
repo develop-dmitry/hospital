@@ -42,7 +42,7 @@ class AppointmentMenuMessangerHandler implements MessangerHandlerInterface
             ->makeInlineButton();
 
         $reEntryButtonCallbackData = $this->messangerKeyboardButtonCallbackDataBuilder
-            ->setAction('re_entry_appointment')
+            ->setAction('remake_appointment')
             ->setCallbackData(['appointment_id' => $callbackData->getValue('appointment_id')])
             ->make();
 

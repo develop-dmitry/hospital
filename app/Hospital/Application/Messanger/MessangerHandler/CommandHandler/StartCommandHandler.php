@@ -42,8 +42,14 @@ class StartCommandHandler implements MessangerHandlerInterface
             ->setText(__('bot.menu_appointment'))
             ->makeReplyButton();
 
+        $appointmentListButton = $this->buttonBuilder
+            ->setText(__('bot.appointment_list'))
+            ->makeReplyButton();
+
+
         $replyKeyboard->addRow($aboutButton);
         $replyKeyboard->addRow($appointmentButton);
+        $replyKeyboard->addRow($appointmentListButton);
 
         return $replyKeyboard;
     }

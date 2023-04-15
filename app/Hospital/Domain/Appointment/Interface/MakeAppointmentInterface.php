@@ -19,42 +19,42 @@ interface MakeAppointmentInterface
     /**
      * @param Client $client
      * @param int $departmentId
-     * @return void
+     * @return MakeAppointmentInterface
      * @throws AppointmentPartSaveFailedException
      */
-    public function saveDepartment(Client $client, int $departmentId): void;
+    public function saveDepartment(Client $client, int $departmentId): static;
 
     /**
      * @param Client $client
      * @param int $doctorId
-     * @return void
+     * @return MakeAppointmentInterface
      * @throws AppointmentPartSaveFailedException
      */
-    public function saveDoctor(Client $client, int $doctorId): void;
+    public function saveDoctor(Client $client, int $doctorId): static;
 
     /**
      * @param Client $client
      * @param DateTime $date
-     * @return void
+     * @return MakeAppointmentInterface
      * @throws AppointmentPartSaveFailedException
      */
-    public function saveDate(Client $client, DateTime $date): void;
+    public function saveDate(Client $client, DateTime $date): static;
 
     /**
      * @param Client $client
      * @param string $time
-     * @return void
+     * @return MakeAppointmentInterface
      * @throws AppointmentPartSaveFailedException
      */
-    public function saveTime(Client $client, string $time): void;
+    public function saveTime(Client $client, string $time): static;
 
     /**
      * @param Client $client
      * @param string $phone
-     * @return void
+     * @return MakeAppointmentInterface
      * @throws AppointmentPartSaveFailedException
      */
-    public function savePhone(Client $client, string $phone): void;
+    public function savePhone(Client $client, string $phone): static;
 
     /**
      * @param Client $client
