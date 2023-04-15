@@ -39,11 +39,16 @@ class TelegramController extends Controller
     {
         $this->logger->info('telegram bot request', $request->toArray());
 
-        $this->handlerManager->setTextHandlers($this->getTextHandlersContainer());
-        $this->handlerManager->setCallbackQueryHandlers($this->getCallbackQueryHandlersContainer());
-        $this->handlerManager->setCommandHandlers($this->getCommandHandlersContainer());
+        try {
+            $this->handlerManager->setTextHandlers($this->getTextHandlersContainer());
+            $this->handlerManager->setCallbackQueryHandlers($this->getCallbackQueryHandlersContainer());
+            $this->handlerManager->setCommandHandlers($this->getCommandHandlersContainer());
 
-        $this->handlerManager->run();
+            $this->handlerManager->run();
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
+
     }
 
     private function getTextHandlersContainer(): MessangerHandlerContainerInterface

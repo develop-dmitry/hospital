@@ -65,7 +65,7 @@ class AppointmentListMessangerHandler implements MessangerHandlerInterface
                     ->makeInlineButton();
                 $keyboard->addRow($button);
             }
-
+            $messanger->setMessage('Ваши записи');
             $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
         } catch (AppointmentNotFoundException | DoctorNotFoundException $e) {
             $this->logger->error("Appointment error: {$e->getMessage()}");
