@@ -27,7 +27,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
 
         $appointmentModel->fill([
             'department_id' => $appointment->getDepartmentId(),
-            'user_id' => $appointment->getUserId(),
+            'client_id' => $appointment->getClientId(),
             'visit_date' => $appointment->getVisitDate(),
             'visit_time' => $appointment->getVisitTime(),
             'visitor_name' => $appointment->getVisitorName(),
@@ -44,34 +44,32 @@ class AppointmentRepository implements AppointmentRepositoryInterface
         return $appointmentModel->id;
     }
 
-    protected function makeEntity(AppointmentModel $appointmentModel): Appointment
-    {
-        return $this->appointmentBuilder
-            ->setId($appointmentModel->id)
-            ->setDepartmentId($appointmentModel->department_id)
-            ->setUserId($appointmentModel->user_id)
-            ->setDoctorId($appointmentModel->doctor_id)
-            ->setVisitDate($appointmentModel->visit_date)
-            ->setVisitTime($appointmentModel->visit_time)
-            ->setVisitorName($appointmentModel->visitor_name)
-            ->setVisitorPhone($appointmentModel->visitor_phone)
-            ->make();
-    }
-
     public function getAppointmentsByDate($date, $doctorId): array
     {
         $appointments = AppointmentModel::whereDate('visit_date', $date)
             ->where('doctor_id', $doctorId)
             ->get();
 
-        if (!$appointments) {
-            throw new AppointmentNotFoundException(
-                "Appointments with doctor_id {$doctorId} and date {$date} not found"
-            );
+        $result = [];
+
+        foreach ($appointments as $appointment) {
+            $result[] = $this->makeEntity($appointment);
         }
 
-        return $appointments->map(function(AppointmentModel $appointmentModel) {
-            return $this->makeEntity($appointmentModel);
-        })->toArray();
+        return $result;
+    }
+
+    protected function makeEntity(AppointmentModel $appointmentModel): Appointment
+    {
+        return $this->appointmentBuilder
+            ->setId($appointmentModel->id)
+            ->setDepartmentId($appointmentModel->department_id)
+            ->setClientId($appointmentModel->client_id)
+            ->setDoctorId($appointmentModel->doctor_id)
+            ->setVisitDate($appointmentModel->visit_date)
+            ->setVisitTime($appointmentModel->visit_time)
+            ->setVisitorName($appointmentModel->visitor_name)
+            ->setVisitorPhone($appointmentModel->visitor_phone)
+            ->make();
     }
 }

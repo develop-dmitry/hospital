@@ -10,12 +10,18 @@ use App\Hospital\Domain\Messanger\Interface\MessangerHandlerRequestInterface;
 class MessangerHandlerRequest implements MessangerHandlerRequestInterface
 {
     public function __construct(
-        protected KeyboardButtonCallbackInterface $callbackData
+        protected KeyboardButtonCallbackInterface $callbackData,
+        protected string $message
     ) {
     }
 
     public function getCallbackData(): KeyboardButtonCallbackInterface
     {
         return $this->callbackData;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
     }
 }

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Hospital\Domain\Messanger\KeyboardButton;
 
+use App\Hospital\Domain\Messanger\Interface\KeyboardButton\InlineKeyboardButtonInterface;
 use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbackInterface;
-use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonInterface;
 
-class InlineKeyboardButton implements KeyboardButtonInterface
+class InlineKeyboardButton implements InlineKeyboardButtonInterface
 {
     public function __construct(
-        protected ?string $text,
-        protected ?string $url,
-        protected ?KeyboardButtonCallbackInterface $callbackData
+        protected ?string $text = null,
+        protected ?string $url = null,
+        protected ?KeyboardButtonCallbackInterface $callbackData = null,
+        protected ?string $queryInCurrentChat = null
     ) {
     }
 
@@ -62,5 +63,25 @@ class InlineKeyboardButton implements KeyboardButtonInterface
     public function setCallbackData(KeyboardButtonCallbackInterface $callbackData): void
     {
         $this->callbackData = $callbackData;
+    }
+
+    public function setQueryInCurrentChat(string $query): void
+    {
+        $this->queryInCurrentChat = $query;
+    }
+
+    public function getQueryInCurrentChat(): ?string
+    {
+        return $this->queryInCurrentChat;
+    }
+
+    public function getButtonParams(): array
+    {
+        return [
+            'text' => $this->text,
+            'url' => $this->url,
+            'callbackQuery' => ($this->callbackData) ? $this->callbackData->getButtonParams() : null,
+            'queryInCurrentChat' => $this->queryInCurrentChat
+        ];
     }
 }

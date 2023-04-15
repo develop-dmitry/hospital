@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Hospital\Domain\Appointment;
 
 use App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface;
+use DateTime;
 
 class AppointmentBuilder implements AppointmentBuilderInterface
 {
 
     protected ?int $id = null;
-    protected $visitTime = null;
+    protected ?DateTime $visitTime = null;
 
-    protected $visitDate = null;
+    protected ?DateTime $visitDate = null;
 
     protected ?int $doctorId = null;
 
-    protected ?int $userId = null;
+    protected ?int $clientId = null;
 
     protected ?string $visitorName = null;
 
@@ -30,13 +31,13 @@ class AppointmentBuilder implements AppointmentBuilderInterface
         return $this;
     }
 
-    public function setVisitTime($visitTime): static
+    public function setVisitTime(DateTime $visitTime): static
     {
         $this->visitTime = $visitTime;
         return $this;
     }
 
-    public function setVisitDate($visitDate): static
+    public function setVisitDate(DateTime $visitDate): static
     {
         $this->visitDate = $visitDate;
         return $this;
@@ -48,9 +49,9 @@ class AppointmentBuilder implements AppointmentBuilderInterface
         return $this;
     }
 
-    public function setUserId(int $userId): static
+    public function setClientId(int $clientId): static
     {
-        $this->userId = $userId;
+        $this->clientId = $clientId;
         return $this;
     }
 
@@ -79,7 +80,7 @@ class AppointmentBuilder implements AppointmentBuilderInterface
             $this->visitTime,
             $this->visitDate,
             $this->doctorId,
-            $this->userId,
+            $this->clientId,
             $this->visitorName,
             $this->departmentId,
             $this->visitorPhone
@@ -94,7 +95,7 @@ class AppointmentBuilder implements AppointmentBuilderInterface
         $this->visitTime = null;
         $this->visitDate = null;
         $this->doctorId = null;
-        $this->userId = null;
+        $this->clientId = null;
         $this->visitorName = null;
         $this->departmentId = null;
         $this->visitorPhone = null;

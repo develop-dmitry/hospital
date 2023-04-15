@@ -27,9 +27,15 @@ interface DoctorRepositoryInterface
     public function saveDoctor(Doctor $doctor): int;
 
     /**
-     * @param int $departmentId
-     * @return array
+     * @param int $doctorId
+     * @return Doctor
      * @throws DoctorNotFoundException
      */
-    public function getByDepartmentId(int $departmentId): array;
+    public function getDoctorById(int $doctorId): Doctor;
+
+    /**
+     * @param int $departmentId
+     * @return array
+     */
+    public function getDoctorsByDepartmentId(int $departmentId): array;
 }

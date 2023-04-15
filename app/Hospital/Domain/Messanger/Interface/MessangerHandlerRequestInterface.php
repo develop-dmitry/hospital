@@ -9,4 +9,6 @@ use App\Hospital\Domain\Messanger\Interface\KeyboardButton\KeyboardButtonCallbac
 interface MessangerHandlerRequestInterface
 {
     public function getCallbackData(): KeyboardButtonCallbackInterface;
+
+    public function getMessage(): string;
 }

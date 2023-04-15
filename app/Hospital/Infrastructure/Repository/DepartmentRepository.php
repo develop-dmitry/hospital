@@ -49,20 +49,24 @@ class DepartmentRepository implements DepartmentRepositoryInterface
         }
     }
 
+    public function getAll(): array
+    {
+        $departments = DepartmentModel::all();
+
+        $result = [];
+
+        foreach ($departments as $department) {
+            $result[] = $this->makeEntity($department);
+        }
+
+        return $result;
+    }
+
     protected function makeEntity(DepartmentModel $departmentModel): Department
     {
         return $this->departmentBuilder
             ->setName($departmentModel->name)
             ->setId($departmentModel->id)
             ->make();
-    }
-
-    public function getAll(): array
-    {
-        $departments = DepartmentModel::all();
-
-        return $departments->map(function($departmentModel) {
-            return $this->makeEntity($departmentModel);
-        })->toArray();
     }
 }

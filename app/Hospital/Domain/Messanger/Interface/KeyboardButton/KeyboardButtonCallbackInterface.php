@@ -16,5 +16,7 @@ interface KeyboardButtonCallbackInterface
 
     public function getValue(string $name, mixed $default = ''): mixed;
 
+    public function has(string $name): bool;
+
     public function getButtonParams(): array;
 }

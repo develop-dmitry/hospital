@@ -25,4 +25,8 @@ interface MessangerInterface
     public function editMessage(): void;
 
     public function isEditMessage(): bool;
+
+    public function setNextHandler(string $name): void;
+
+    public function getNextHandler(): string;
 }

@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Hospital\Domain\Appointment;
 
+use DateTime;
+
 class Appointment
 {
 public function __construct(
-    protected ?int $id,
-    protected $visitTime,
-    protected $visitDate,
-    protected int $doctorId,
-    protected int $userId,
-    protected string $visitorName,
-    protected int $departmentId,
-    protected ?string $visitorPhone,
+    protected ?int     $id,
+    protected DateTime $visitTime,
+    protected DateTime $visitDate,
+    protected int      $doctorId,
+    protected int      $clientId,
+    protected string   $visitorName,
+    protected int      $departmentId,
+    protected ?string  $visitorPhone,
 ) {}
 
     /**
@@ -30,31 +32,31 @@ public function __construct(
         $this->setId($id);
         return $this;
     }
-    public function getVisitTime()
+    public function getVisitTime(): DateTime
     {
         return $this->visitTime;
     }
 
     /**
-     * @param $visitTime
+     * @param DateTime $visitTime
      * @return Appointment
      */
-    public function setVisitTime($visitTime): Appointment
+    public function setVisitTime(DateTime $visitTime): Appointment
     {
         $this->visitTime = $visitTime;
         return $this;
     }
 
-    public function getVisitDate()
+    public function getVisitDate(): DateTime
     {
         return $this->visitDate;
     }
 
     /**
-     * @param $visitDate
+     * @param DateTime $visitDate
      * @return Appointment
      */
-    public function setVisitDate($visitDate): Appointment
+    public function setVisitDate(DateTime $visitDate): Appointment
     {
         $this->visitDate = $visitDate;
         return $this;
@@ -81,18 +83,18 @@ public function __construct(
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getClientId(): int
     {
-        return $this->userId;
+        return $this->clientId;
     }
 
     /**
-     * @param int $userId
+     * @param int $clientId
      * @return Appointment
      */
-    public function setUserId(int $userId): Appointment
+    public function setClientId(int $clientId): Appointment
     {
-        $this->userId = $userId;
+        $this->clientId = $clientId;
         return $this;
     }
 
