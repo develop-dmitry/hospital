@@ -27,7 +27,7 @@ class TelegramSetWebhook extends Command
 
     private function setWebhook(string $token): string
     {
-        $url = $this->getHost() . '/tg/Bot';
+        $url = $this->getHost() . '/telegram/appointment-bot';
 
         return Http::get("https://api.telegram.org/bot$token/setWebhook?url=$url")->body();
     }
