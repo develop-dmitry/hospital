@@ -23,6 +23,7 @@ services:
         WWWGROUP: ${WWWGROUP}
         WWWUSER: ${WWWUSER}
         PHP_INI_DIR: ${PHP_INI_DIR}
+        APP_MODE: ${APP_MODE}
     container_name: hospital_web
     volumes:
       - ./:/var/www/html

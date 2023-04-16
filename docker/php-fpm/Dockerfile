@@ -3,9 +3,13 @@ FROM php:8.1-fpm
 ARG PHP_INI_DIR
 ARG WWWGROUP
 ARG WWWUSER
+ARG APP_MODE
 
 COPY ./conf.d/php.ini $PHP_INI_DIR/conf.d/php.ini
-COPY ./conf.d/docker-php-ext-xdebug.ini $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini
+
+RUN if [ "$APP_MODE" = "develop"]; then \
+        COPY ./conf.d/docker-php-ext-xdebug.ini $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini; \
+    fi
 
 RUN apt-get update \
     && apt-get install -y \
