@@ -38,8 +38,6 @@ class Menu extends Component
         return [
             route('profile-schedule') => 'График работы',
             route('profile-schedule-choose') => 'Выбрать график работы',
-            route('profile-analyze') => 'Анализы',
-            route('profile-analyze-upload') => 'Загрузить анализы'
         ];
     }
 
@@ -50,7 +48,7 @@ class Menu extends Component
         ];
 
         if ($this->auth->isAuth()) {
-            $menu[route('profile')] = 'Профиль';
+            $menu[route('profile')] = 'Личный кабинет';
         } else {
             $menu[route('login')] = 'Авторизация';
         }

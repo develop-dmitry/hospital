@@ -20,16 +20,6 @@ $router->group(['prefix' => 'profile'], function () use ($router) {
         return view('profile.profile');
     }]);
 
-    $router->group(['prefix' => 'analyze'], function () use ($router) {
-        $router->get('/', ['as' => 'profile-analyze', 'middleware' => ['auth'], function () {
-            return view('profile.analyze.list');
-        }]);
-
-        $router->get('upload', ['as' => 'profile-analyze-upload', 'middleware' => ['auth'], function () {
-            return view('profile.analyze.upload');
-        }]);
-    });
-
     $router->group(['prefix' => 'schedule'], function () use ($router) {
         $router->get('/', ['as' => 'profile-schedule', function () {
             return view('profile.schedule.list');
@@ -63,8 +53,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     });
 });
 
-$router->group(['prefix' => 'tg'], function () use ($router) {
-    $router->post('/Bot', ['uses' => 'TelegramController']);
+$router->group(['prefix' => 'telegram'], function () use ($router) {
+    $router->post('appointment-bot', ['uses' => 'TelegramController']);
 });
 
 $router->get('/login', ['as' => 'login', 'uses' => 'UserController@login']);
