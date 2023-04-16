@@ -95,6 +95,38 @@ class AppointmentRepositoryTest extends TestCase
         $this->assertTrue($hasAppointment);
     }
 
+    public function testGetAppointmentsByDateWhichCanceled(): void
+    {
+        $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);
+        $appointment = $this->appointmentBuilder
+            ->setDepartmentId($this->department->getId())
+            ->setVisitorPhone('+79999999999')
+            ->setVisitorName('test')
+            ->setVisitTime($this->time)
+            ->setVisitDate($this->date)
+            ->setDoctorId($this->doctor->getId())
+            ->setClientId($this->client->getId())
+            ->setCanceled(true)
+            ->make();
+        $appointmentRepository->saveAppointment($appointment);
+
+        $appointments = $appointmentRepository->getAppointmentsByDate($this->date, $this->doctor->getId());
+
+        $hasAppointment = false;
+
+        foreach ($appointments as $appointment) {
+            if (
+                $appointment->getClientId() === $this->client->getId() &&
+                $appointment->getVisitDate()->format('Y-m-d') === $this->date->format('Y-m-d') &&
+                $appointment->getVisitTime()->format('H:i') === $this->time->format('H:i')
+            ) {
+                $hasAppointment = true;
+            }
+        }
+
+        $this->assertFalse($hasAppointment);
+    }
+
     public function testGetAppointmentsByClientId(): void
     {
         $appointmentRepository = new AppointmentRepository($this->appointmentBuilder);

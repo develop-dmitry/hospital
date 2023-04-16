@@ -35,4 +35,10 @@ enum MessangerCommand: string
     case StartCommand = 'start';
 
     case AppointmentSetPhoneMessage = 'appointment_set_phone';
+
+    case ReMakeAppointmentChooseDateAction = 're_make_appointment_choose_date';
+
+    case ReMakeAppointmentChooseTimeAction = 're_make_appointment_choose_time';
+
+    case ReMakeAppointmentConfirmAction = 're_make_confirm_appointment';
 }

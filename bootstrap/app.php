@@ -214,10 +214,6 @@ $app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentRepositoryI
     );
 });
 
-$app->bind(\App\Hospital\Domain\Appointment\Interface\ReMakeAppointmentInterface::class, function () {
-    return new \App\Hospital\Domain\Appointment\ReMakeAppointment();
-});
-
 $app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface::class, function () use ($app) {
     return new \App\Hospital\Domain\Appointment\MakeAppointment(
         $app->make(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentRepositoryInterface::class),
@@ -226,6 +222,19 @@ $app->bind(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface::
         $app->make(\App\Hospital\Domain\Doctor\Interface\DoctorRepositoryInterface::class),
         $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentRepositoryInterface::class),
         $app->make(\App\Hospital\Domain\Appointment\Interface\AppointmentBuilderInterface::class)
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\ReMakeAppointmentRepositoryInterface::class, function () {
+    return new \App\Hospital\Infrastructure\Repository\ReMakeAppointmentRepository(
+        \Illuminate\Support\Facades\Redis::client()
+    );
+});
+
+$app->bind(\App\Hospital\Domain\Appointment\Interface\ReMakeAppointmentInterface::class, function () use ($app) {
+    return new \App\Hospital\Domain\Appointment\ReMakeAppointment(
+        $app->make(\App\Hospital\Domain\Appointment\Interface\MakeAppointmentInterface::class),
+        $app->make(\App\Hospital\Domain\Appointment\Interface\ReMakeAppointmentRepositoryInterface::class)
     );
 });
 

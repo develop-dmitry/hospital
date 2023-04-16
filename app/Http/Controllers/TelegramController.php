@@ -15,6 +15,9 @@ use App\Hospital\Application\Messanger\MessangerHandler\AppointmentListMessanger
 use App\Hospital\Application\Messanger\MessangerHandler\AppointmentMenuMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\CancelAppointmentMessangerHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\MakeAppointmentHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\ReMakeAppointmentChooseDateHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\ReMakeAppointmentChooseTimeHandler;
+use App\Hospital\Application\Messanger\MessangerHandler\ReMakeAppointmentConfirmHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\ReMakeAppointmentHandler;
 use App\Hospital\Application\Messanger\MessangerHandler\StartCommandHandler;
 use App\Hospital\Domain\Appointment\Interface\AppointmentListInterface;
@@ -40,11 +43,10 @@ class TelegramController extends Controller
         private readonly KeyboardBuilderInterface               $messangerKeyboardBuilder,
         private readonly KeyboardButtonBuilderInterface         $messangerKeyboardButtonBuilder,
         private readonly KeyboardButtonCallbackBuilderInterface $messangerKeyboardButtonCallbackBuilder,
-        private readonly AppointmentRepositoryInterface         $appointmentRepository,
         private readonly AppointmentListInterface               $appointmentList,
         private readonly MakeAppointmentInterface               $makeAppointment,
         private readonly CancelAppointmentInterface             $cancelAppointment,
-        private readonly ReMakeAppointmentInterface             $reMakeAppointment
+        private readonly ReMakeAppointmentInterface             $reMakeAppointment,
     ) {
     }
 
@@ -164,7 +166,38 @@ class TelegramController extends Controller
                 $this->messangerKeyboardBuilder,
                 $this->messangerKeyboardButtonBuilder,
                 $this->messangerKeyboardButtonCallbackBuilder,
-                $this->appointmentRepository,
+                $this->appointmentList,
+                $this->reMakeAppointment
+            )
+        );
+
+        $callbackQueryHandlers->addHandler(
+            MessangerCommand::ReMakeAppointmentChooseDateAction,
+            new ReMakeAppointmentChooseDateHandler(
+                $this->logger,
+                $this->messangerKeyboardBuilder,
+                $this->messangerKeyboardButtonBuilder,
+                $this->messangerKeyboardButtonCallbackBuilder,
+                $this->reMakeAppointment
+            )
+        );
+
+        $callbackQueryHandlers->addHandler(
+            MessangerCommand::ReMakeAppointmentChooseTimeAction,
+            new ReMakeAppointmentChooseTimeHandler(
+                $this->logger,
+                $this->messangerKeyboardBuilder,
+                $this->messangerKeyboardButtonBuilder,
+                $this->messangerKeyboardButtonCallbackBuilder,
+                $this->reMakeAppointment
+            )
+        );
+
+        $callbackQueryHandlers->addHandler(
+            MessangerCommand::ReMakeAppointmentConfirmAction,
+            new ReMakeAppointmentConfirmHandler(
+                $this->reMakeAppointment,
+                $this->logger
             )
         );
 
