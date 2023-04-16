@@ -147,7 +147,7 @@ class MakeAppointment implements MakeAppointmentInterface
 
             $message = "Отделение: {$department->getName()}" . PHP_EOL;
             $message .= "Специалист: {$doctor->getName()}" . PHP_EOL;
-            $message .= "Дата: {$date->format('m.d.Y')}" . PHP_EOL;
+            $message .= "Дата: {$date->format('d.m.Y')}" . PHP_EOL;
             $message .= "Время: {$time}" . PHP_EOL;
             $message .= "Номер телефона: {$phone}" . PHP_EOL;
 
@@ -185,7 +185,7 @@ class MakeAppointment implements MakeAppointmentInterface
             $this->makeAppointmentRepository->getDate($client);
 
             return true;
-        } catch (AppointmentPartNotFoundException) {
+        } catch (AppointmentPartNotFoundException|Exception) {
             return false;
         }
     }

@@ -49,6 +49,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
     {
         $appointments = AppointmentModel::whereDate('visit_date', $date)
             ->where('doctor_id', $doctorId)
+            ->where('canceled', false)
             ->get();
 
         $result = [];
