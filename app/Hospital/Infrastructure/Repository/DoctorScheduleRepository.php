@@ -59,6 +59,7 @@ class DoctorScheduleRepository implements DoctorScheduleRepositoryInterface
     public function getDoctorSchedule(int $doctorId): array
     {
         $doctorSchedules = DoctorScheduleModel::where('doctor_id', $doctorId)
+            ->whereDate('date', '>', date('Y-m-d'))
             ->orderBy('date')
             ->get();
 
