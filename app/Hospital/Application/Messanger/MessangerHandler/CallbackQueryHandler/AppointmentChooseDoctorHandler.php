@@ -35,6 +35,7 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
         MessangerInterface $messanger
     ): void {
         $callbackData = $request->getCallbackData();
+        $messanger->editMessage();
 
         if (!$callbackData->has('doctor_id')) {
             $messanger->setMessage('Технические неполадки, попробуйте позднее');
@@ -62,7 +63,6 @@ class AppointmentChooseDoctorHandler implements MessangerHandlerInterface
             $keyboard->addRow($button);
         }
 
-        $messanger->editMessage();
         $messanger->setMessage('Выберите дату записи');
         $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
     }

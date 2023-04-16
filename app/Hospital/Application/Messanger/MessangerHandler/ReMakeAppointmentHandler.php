@@ -41,6 +41,8 @@ class ReMakeAppointmentHandler implements MessangerHandlerInterface
     ): void {
         try {
             $callbackData = $request->getCallbackData();
+            $messanger->editMessage();
+
             $appointmentId = $callbackData->getValue('appointment_id');
             $appointment = $this->appointmentRepository->getById($appointmentId);
 
@@ -67,7 +69,6 @@ class ReMakeAppointmentHandler implements MessangerHandlerInterface
                 $keyboard->addRow($button);
             }
 
-            $messanger->editMessage();
             $messanger->setMessage('Выберите дату записи');
             $messanger->setMessangerKeyboard($keyboard, KeyboardType::Inline);
         } catch (AppointmentNotFoundException | AppointmentPartSaveFailedException $e) {
